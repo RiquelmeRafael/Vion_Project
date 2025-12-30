@@ -5,7 +5,8 @@ namespace Vion.Infrastructure.Persistence
 {
     public class AppDbContext : DbContext
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+        public AppDbContext(DbContextOptions<AppDbContext> options)
+            : base(options) { }
 
         public DbSet<Produto> Produtos { get; set; }
         public DbSet<Categoria> Categorias { get; set; }
@@ -16,12 +17,25 @@ namespace Vion.Infrastructure.Persistence
         {
             base.OnModelCreating(modelBuilder);
 
+            // =======================
+            // CONFIGURAÇÕES
+            // =======================
+            modelBuilder.Entity<Produto>()
+                .Property(p => p.Preco)
+                .HasPrecision(18, 2);
+
+            // =======================
+            // SEED - CATEGORIAS
+            // =======================
             modelBuilder.Entity<Categoria>().HasData(
                 new Categoria { Id = 1, Nome = "Camisas" },
                 new Categoria { Id = 2, Nome = "Tênis" },
                 new Categoria { Id = 3, Nome = "Moletons" }
             );
 
+            // =======================
+            // SEED - TAMANHOS
+            // =======================
             modelBuilder.Entity<Tamanho>().HasData(
                 new Tamanho { Id = 1, Nome = "P" },
                 new Tamanho { Id = 2, Nome = "M" },
@@ -36,6 +50,9 @@ namespace Vion.Infrastructure.Persistence
                 new Tamanho { Id = 11, Nome = "42" }
             );
 
+            // =======================
+            // SEED - TIPOS DE USUÁRIO
+            // =======================
             modelBuilder.Entity<TipoUsuario>().HasData(
                 new TipoUsuario { Id = 1, Nome = "Admin" },
                 new TipoUsuario { Id = 2, Nome = "Gerente" },
