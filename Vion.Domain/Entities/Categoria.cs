@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿
+
 
 namespace Vion.Domain.Entities
 {
@@ -7,6 +8,6 @@ namespace Vion.Domain.Entities
         public int Id { get; set; }
         public string Nome { get; set; }
 
-        public ICollection<Produto> Produtos { get; set; }
+        public ICollection<Produto> Produtos { get; set; } = new List<Produto>();
     }
 }

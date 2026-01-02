@@ -10,10 +10,11 @@
         public int CategoriaId { get; set; }
         public Categoria Categoria { get; set; }
 
-        public string Cor { get; set; }
-        public string Tamanho { get; set; }
-        public int Estoque { get; set; }
+        public int TamanhoId { get; set; }      // 🔥 FK
+        public Tamanho Tamanho { get; set; }    // 🔥 Navegação
 
+        public string Cor { get; set; }
+        public int Estoque { get; set; }
         public string ImagemUrl { get; set; }
         public DateTime CreatedAt { get; set; }
     }

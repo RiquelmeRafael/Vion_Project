@@ -37,23 +37,6 @@ namespace Vion.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categorias");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Nome = "Camisas"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Nome = "Tênis"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Nome = "Moletons"
-                        });
                 });
 
             modelBuilder.Entity("Vion.Domain.Entities.Produto", b =>
@@ -93,13 +76,14 @@ namespace Vion.Infrastructure.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("Tamanho")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("TamanhoId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CategoriaId");
+
+                    b.HasIndex("TamanhoId");
 
                     b.ToTable("Produtos");
                 });
@@ -119,63 +103,6 @@ namespace Vion.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Tamanhos");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Nome = "P"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Nome = "M"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Nome = "G"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Nome = "GG"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Nome = "36"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Nome = "37"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            Nome = "38"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            Nome = "39"
-                        },
-                        new
-                        {
-                            Id = 9,
-                            Nome = "40"
-                        },
-                        new
-                        {
-                            Id = 10,
-                            Nome = "41"
-                        },
-                        new
-                        {
-                            Id = 11,
-                            Nome = "42"
-                        });
                 });
 
             modelBuilder.Entity("Vion.Domain.Entities.TipoUsuario", b =>
@@ -193,23 +120,36 @@ namespace Vion.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("TiposUsuario");
+                });
 
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Nome = "Admin"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Nome = "Gerente"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Nome = "Cliente"
-                        });
+            modelBuilder.Entity("Vion.Domain.Entities.Usuario", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SenhaHash")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TipoUsuarioId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TipoUsuarioId");
+
+                    b.ToTable("Usuarios");
                 });
 
             modelBuilder.Entity("Vion.Domain.Entities.Produto", b =>
@@ -217,13 +157,37 @@ namespace Vion.Infrastructure.Migrations
                     b.HasOne("Vion.Domain.Entities.Categoria", "Categoria")
                         .WithMany("Produtos")
                         .HasForeignKey("CategoriaId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Vion.Domain.Entities.Tamanho", "Tamanho")
+                        .WithMany("Produtos")
+                        .HasForeignKey("TamanhoId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Categoria");
+
+                    b.Navigation("Tamanho");
+                });
+
+            modelBuilder.Entity("Vion.Domain.Entities.Usuario", b =>
+                {
+                    b.HasOne("Vion.Domain.Entities.TipoUsuario", "TipoUsuario")
+                        .WithMany()
+                        .HasForeignKey("TipoUsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("TipoUsuario");
                 });
 
             modelBuilder.Entity("Vion.Domain.Entities.Categoria", b =>
+                {
+                    b.Navigation("Produtos");
+                });
+
+            modelBuilder.Entity("Vion.Domain.Entities.Tamanho", b =>
                 {
                     b.Navigation("Produtos");
                 });

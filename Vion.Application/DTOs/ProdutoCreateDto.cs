@@ -1,19 +1,13 @@
 ﻿namespace Vion.Application.DTOs;
 
-public class ProdutoDto
+public class ProdutoCreateDto
 {
-    public int Id { get; set; }
     public string Nome { get; set; } = string.Empty;
-    public string? Descricao { get; set; }
+    public string Descricao { get; set; } = string.Empty;
     public decimal Preco { get; set; }
-
     public int CategoriaId { get; set; }
-    public string Categoria { get; set; } = string.Empty;
-
     public int TamanhoId { get; set; }
-    public string Tamanho { get; set; } = string.Empty;
-
-    public string? Cor { get; set; }
+    public string Cor { get; set; } = string.Empty;
     public int Estoque { get; set; }
     public string? ImagemUrl { get; set; }
 }

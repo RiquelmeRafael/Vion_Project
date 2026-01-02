@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Vion.Domain.Entities;
+﻿using Vion.Domain.Entities;
 
-namespace Vion.Application.Abstractions.Repositories;
-
-public interface ICategoriaRepository
+namespace Vion.Application.Abstractions.Repositories
 {
-    Task<IEnumerable<Categoria>> GetAllAsync();
+    public interface ICategoriaRepository
+    {
+        Task<IEnumerable<Categoria>> GetAllAsync();
+        Task<Categoria?> GetByIdAsync(int id);
+        Task AddAsync(Categoria categoria);
+        void Update(Categoria categoria);
+        void Delete(Categoria categoria);
+        Task SaveChangesAsync();
+    }
 }
-

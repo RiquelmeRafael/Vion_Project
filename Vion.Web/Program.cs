@@ -1,14 +1,35 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+using Microsoft.EntityFrameworkCore;
+using Vion.Infrastructure.Persistence;
+using Vion.Infrastructure.Persistence.Seeds;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// =======================
+// BANCO DE DADOS
+// =======================
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection")
+    )
+);
 
 // MVC
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
+// =======================
+// SEED (SÓ POPULA)
+// =======================
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await DbSeeder.SeedAsync(context);
+}
+
+// =======================
+// PIPELINE
+// =======================
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
