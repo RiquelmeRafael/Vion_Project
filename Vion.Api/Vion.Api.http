@@ -1,0 +1,6 @@
+@Vion.Api_HostAddress = http://localhost:5036
+
+GET {{Vion.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
