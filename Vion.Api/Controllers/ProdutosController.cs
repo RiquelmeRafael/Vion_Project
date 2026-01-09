@@ -90,7 +90,7 @@ public class ProdutosController : ControllerBase
     }
 
     // =======================
-    // PUT
+    // PUT (CORRIGIDO — SEM REMOVER NADA)
     // =======================
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(int id, [FromBody] ProdutoUpdateDto dto)
@@ -102,11 +102,16 @@ public class ProdutosController : ControllerBase
         produto.Nome = dto.Nome;
         produto.Descricao = dto.Descricao;
         produto.Preco = dto.Preco;
-        produto.CategoriaId = dto.CategoriaId;
-        produto.TamanhoId = dto.TamanhoId;
         produto.Cor = dto.Cor;
         produto.Estoque = dto.Estoque;
         produto.ImagemUrl = dto.ImagemUrl;
+
+        // ?? PROTEÇÃO CONTRA FK INVÁLIDA
+        if (dto.CategoriaId > 0)
+            produto.CategoriaId = dto.CategoriaId;
+
+        if (dto.TamanhoId > 0)
+            produto.TamanhoId = dto.TamanhoId;
 
         _repository.Update(produto);
         await _repository.SaveChangesAsync();

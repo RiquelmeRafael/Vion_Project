@@ -1,115 +1,169 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Vion.Domain.Entities;
-using Vion.Infrastructure.Persistence;
 
 namespace Vion.Infrastructure.Persistence.Seeds
 {
     public static class DbSeeder
     {
-        public static async Task SeedAsync(AppDbContext context)
+        public static async Task SeedAsync(
+            AppDbContext context,
+            IServiceProvider services)
         {
             // =======================
-            // EVITA DUPLICAR SEED
+            // EVITA RODAR DUAS VEZES
             // =======================
-            if (await context.Produtos.AnyAsync())
+            if (await context.TiposUsuario.AnyAsync())
                 return;
 
             // =======================
-            // TIPOS DE USUÁRIO
+            // TIPOS DE USUÁRIO (PRIMEIRO DE TUDO)
             // =======================
-            var tiposUsuario = new List<TipoUsuario>
-            {
-                new() { Nome = "Admin" },
-                new() { Nome = "Gerente" },
-                new() { Nome = "Cliente" }
-            };
+            var tipoAdmin = new TipoUsuario { Nome = "Admin" };
+            var tipoGerente = new TipoUsuario { Nome = "Gerente" };
+            var tipoCliente = new TipoUsuario { Nome = "Cliente" };
 
-            context.TiposUsuario.AddRange(tiposUsuario);
+            context.TiposUsuario.AddRange(
+                tipoAdmin,
+                tipoGerente,
+                tipoCliente
+            );
+
             await context.SaveChangesAsync();
 
             // =======================
-            // USUÁRIOS
+            // IDENTITY SERVICES
             // =======================
-            var hasher = new PasswordHasher<Usuario>();
+            var roleManager =
+                services.GetRequiredService<RoleManager<IdentityRole<int>>>();
 
-            var admin = new Usuario
+            var userManager =
+                services.GetRequiredService<UserManager<Usuario>>();
+
+            // =======================
+            // ROLES
+            // =======================
+            var roles = new[] { "Admin", "Gerente", "Cliente" };
+
+            foreach (var role in roles)
             {
-                Nome = "Administrador",
-                Email = "admin@vion.com",
-                TipoUsuarioId = tiposUsuario.First(t => t.Nome == "Admin").Id,
-                SenhaHash = hasher.HashPassword(null!, "Admin@123")
-            };
+                if (!await roleManager.RoleExistsAsync(role))
+                {
+                    await roleManager.CreateAsync(
+                        new IdentityRole<int>(role)
+                    );
+                }
+            }
 
-            var gerente = new Usuario
+            // =======================
+            // USUÁRIOS (COM FK CORRETA)
+            // =======================
+            async Task CriarUsuario(
+                string nome,
+                string email,
+                string role,
+                int tipoUsuarioId)
             {
-                Nome = "Gerente",
-                Email = "gerente@vion.com",
-                TipoUsuarioId = tiposUsuario.First(t => t.Nome == "Gerente").Id,
-                SenhaHash = hasher.HashPassword(null!, "Gerente@123")
-            };
+                if (await userManager.FindByEmailAsync(email) != null)
+                    return;
 
-            var cliente = new Usuario
-            {
-                Nome = "Cliente",
-                Email = "cliente@vion.com",
-                TipoUsuarioId = tiposUsuario.First(t => t.Nome == "Cliente").Id,
-                SenhaHash = hasher.HashPassword(null!, "Cliente@123")
-            };
+                var user = new Usuario
+                {
+                    Nome = nome,
+                    UserName = email,
+                    Email = email,
+                    EmailConfirmed = true,
+                    TipoUsuarioId = tipoUsuarioId
+                };
 
-            context.Usuarios.AddRange(admin, gerente, cliente);
-            await context.SaveChangesAsync();
+                var result = await userManager.CreateAsync(
+                    user,
+                    $"{role}@123"
+                );
+
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(user, role);
+                }
+            }
+
+            await CriarUsuario(
+                "Administrador",
+                "admin@vion.com",
+                "Admin",
+                tipoAdmin.Id
+            );
+
+            await CriarUsuario(
+                "Gerente",
+                "gerente@vion.com",
+                "Gerente",
+                tipoGerente.Id
+            );
+
+            await CriarUsuario(
+                "Cliente",
+                "cliente@vion.com",
+                "Cliente",
+                tipoCliente.Id
+            );
 
             // =======================
             // TAMANHOS
             // =======================
-            var tamanhos = new List<Tamanho>
-            {
-                new() { Nome = "P" },
-                new() { Nome = "M" },
-                new() { Nome = "G" },
-                new() { Nome = "GG" },
-                new() { Nome = "36" },
-                new() { Nome = "38" },
-                new() { Nome = "40" }
-            };
+            var tamanhoP = new Tamanho { Nome = "P" };
+            var tamanhoM = new Tamanho { Nome = "M" };
+            var tamanhoG = new Tamanho { Nome = "G" };
+            var tamanhoGG = new Tamanho { Nome = "GG" };
+            var tamanho36 = new Tamanho { Nome = "36" };
+            var tamanho38 = new Tamanho { Nome = "38" };
+            var tamanho40 = new Tamanho { Nome = "40" };
 
-            context.Tamanhos.AddRange(tamanhos);
+            context.Tamanhos.AddRange(
+                tamanhoP,
+                tamanhoM,
+                tamanhoG,
+                tamanhoGG,
+                tamanho36,
+                tamanho38,
+                tamanho40
+            );
+
             await context.SaveChangesAsync();
 
             // =======================
-            // CATEGORIAS
+            // CATEGORIAS (SEM LINQ)
             // =======================
-            var categorias = new List<Categoria>
-            {
-                new() { Nome = "Camisas" },
-                new() { Nome = "Tênis" },
-                new() { Nome = "Moletons" }
-            };
+            var categoriaCamisas = new Categoria { Nome = "Camisas" };
+            var categoriaTenis = new Categoria { Nome = "Tênis" };
+            var categoriaMoletons = new Categoria { Nome = "Moletons" };
 
-            context.Categorias.AddRange(categorias);
+            context.Categorias.AddRange(
+                categoriaCamisas,
+                categoriaTenis,
+                categoriaMoletons
+            );
+
             await context.SaveChangesAsync();
 
             // =======================
-            // PRODUTOS (CORRETO)
+            // PRODUTO
             // =======================
-            var produtos = new List<Produto>
+            var produto = new Produto
             {
-                new()
-                {
-                    Nome = "Camiseta Básica",
-                    Descricao = "100% algodão",
-                    Preco = 59.90m,
-                    CategoriaId = categorias.First(c => c.Nome == "Camisas").Id,
-                    TamanhoId = tamanhos.First(t => t.Nome == "M").Id, // ✅ AQUI ESTÁ A CORREÇÃO
-                    Cor = "Branca",
-                    Estoque = 50,
-                    ImagemUrl = "https://via.placeholder.com/300",
-                    CreatedAt = DateTime.UtcNow
-                }
+                Nome = "Camiseta Básica",
+                Descricao = "100% algodão",
+                Preco = 59.90m,
+                CategoriaId = categoriaCamisas.Id,
+                TamanhoId = tamanhoM.Id,
+                Cor = "Branca",
+                Estoque = 50,
+                ImagemUrl = "https://via.placeholder.com/300",
+                CreatedAt = DateTime.UtcNow
             };
 
-            context.Produtos.AddRange(produtos);
+            context.Produtos.Add(produto);
             await context.SaveChangesAsync();
         }
     }

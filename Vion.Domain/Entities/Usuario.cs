@@ -1,19 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Microsoft.AspNetCore.Identity;
 
-namespace Vion.Domain.Entities;
-
-public class Usuario
+namespace Vion.Domain.Entities
 {
-    public int Id { get; set; }
+    public class Usuario : IdentityUser<int>
+    {
+        public string Nome { get; set; } = "";
 
-    public string Nome { get; set; } = string.Empty;
-    public string Email { get; set; } = string.Empty;
-
-    public string SenhaHash { get; set; } = string.Empty;
-
-    // 🔑 FK
-    public int TipoUsuarioId { get; set; }
-
-    // 🔗 Navegação
-    public TipoUsuario TipoUsuario { get; set; } = null!;
+        public int TipoUsuarioId { get; set; }
+        public TipoUsuario TipoUsuario { get; set; } = null!;
+    }
 }

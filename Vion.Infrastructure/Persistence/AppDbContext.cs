@@ -1,14 +1,19 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Vion.Domain.Entities;
 
 namespace Vion.Infrastructure.Persistence
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext
+        : IdentityDbContext<Usuario, IdentityRole<int>, int>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options)
             : base(options) { }
 
-        public DbSet<Usuario> Usuarios { get; set; }
+        // =======================
+        // TABELAS DO DOMÍNIO
+        // =======================
         public DbSet<TipoUsuario> TiposUsuario { get; set; }
         public DbSet<Categoria> Categorias { get; set; }
         public DbSet<Tamanho> Tamanhos { get; set; }
@@ -16,7 +21,13 @@ namespace Vion.Infrastructure.Persistence
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);     modelBuilder.Entity<Produto>()
+            // ⚠️ OBRIGATÓRIO para Identity
+            base.OnModelCreating(modelBuilder);
+
+            // =======================
+            // PRODUTO
+            // =======================
+            modelBuilder.Entity<Produto>()
                 .Property(p => p.Preco)
                 .HasPrecision(18, 2);
 
@@ -30,6 +41,15 @@ namespace Vion.Infrastructure.Persistence
                 .HasOne(p => p.Tamanho)
                 .WithMany(t => t.Produtos)
                 .HasForeignKey(p => p.TamanhoId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // =======================
+            // USUARIO → TIPOUSUARIO
+            // =======================
+            modelBuilder.Entity<Usuario>()
+                .HasOne(u => u.TipoUsuario)
+                .WithMany(t => t.Usuarios)
+                .HasForeignKey(u => u.TipoUsuarioId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }

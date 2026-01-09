@@ -1,44 +1,150 @@
+/* ===============================
+   BASE
+=============================== */
+
 html {
-  font-size: 14px;
+    font-size: 14px;
+    position: relative;
+    min-height: 100%;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
+    html {
+        font-size: 16px;
+    }
 }
 
 body {
-  margin-bottom: 60px;
-
+    margin-bottom: 60px;
     background-color: #0b0b0b;
     color: #eee;
+    font-family: "Segoe UI", Roboto, system-ui, -apple-system, sans-serif;
 }
+
+/* ===============================
+   LINKS
+=============================== */
 
 a {
     color: #9ecbff;
+    text-decoration: none;
+}
+
+    a:hover {
+        color: #cfe4ff;
+        text-decoration: underline;
+    }
+
+/* ===============================
+   NAVBAR
+=============================== */
+
+.navbar {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .navbar-brand {
     letter-spacing: 2px;
+    font-weight: 700;
 }
 
-
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+.nav-link {
+    color: #ddd !important;
+    margin-left: 10px;
+    transition: color 0.2s ease;
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+    .nav-link:hover {
+        color: #9ecbff !important;
+    }
+
+/* ===============================
+   CARDS (CATÁLOGO)
+=============================== */
+
+.card {
+    border-radius: 12px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
+    .card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    }
+
+.card-img-top {
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+}
+
+/* ===============================
+   BOTÕES
+=============================== */
+
+.btn {
+    border-radius: 10px;
+    font-weight: 500;
+}
+
+.btn-outline-success {
+    border-color: #28a745;
+    color: #28a745;
+}
+
+    .btn-outline-success:hover {
+        background-color: #28a745;
+        color: #fff;
+    }
+
+/* ===============================
+   FORMULÁRIOS
+=============================== */
+
+.form-control,
+.form-select {
+    background-color: #111;
+    border: 1px solid #333;
+    color: #eee;
+    border-radius: 10px;
+}
+
+    .form-control:focus,
+    .form-select:focus {
+        background-color: #111;
+        color: #fff;
+        border-color: #258cfb;
+        box-shadow: 0 0 0 0.15rem rgba(37, 140, 251, 0.35);
+    }
+
+.form-label {
+    color: #ccc;
+}
+
+/* ===============================
+   ACESSIBILIDADE / FOCUS
+=============================== */
+
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem #fff, 0 0 0 0.25rem #258cfb;
+}
+
+/* ===============================
+   FOOTER
+=============================== */
+
+footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    color: #aaa;
+}
+
+/* ===============================
+   UTILITÁRIOS
+=============================== */
+
+.text-muted {
+    color: #aaa !important;
+}

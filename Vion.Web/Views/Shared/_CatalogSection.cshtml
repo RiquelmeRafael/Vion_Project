@@ -6,7 +6,6 @@
         <div class="col-md-4">
             <div class="card bg-dark text-light h-100 shadow-sm border-secondary">
 
-                @* Imagem do produto *@
                 @if (!string.IsNullOrEmpty(produto.ImagemUrl))
                 {
                     <img src="@produto.ImagemUrl"
@@ -19,34 +18,40 @@
 
                     <h5 class="card-title mb-2">@produto.Nome</h5>
 
-                    @* Descrição *@
                     @if (!string.IsNullOrEmpty(produto.Descricao))
                     {
-                        <p class="card-text text-light small mb-3">
+                        <p class="card-text small mb-3">
                             @produto.Descricao
                         </p>
                     }
 
-                    @* Tamanho + Estoque lado a lado *@
                     <div class="d-flex justify-content-between mb-3">
                         <span class="text-secondary small">
                             Tamanho: <strong>@produto.Tamanho</strong>
                         </span>
-
                         <span class="text-warning small">
                             Estoque: <strong>@produto.Estoque</strong>
                         </span>
                     </div>
 
-                    @* Preço *@
                     <p class="fs-5 fw-bold mb-3">
                         R$ @produto.Preco.ToString("N2")
                     </p>
 
-                    @* Botão Comprar (futuro) *@
-                    <button class="btn btn-outline-success mt-auto w-100">
-                        Comprar
-                    </button>
+                    @if (User.Identity != null && User.Identity.IsAuthenticated)
+                    {
+                        <button class="btn btn-outline-success mt-auto w-100">
+                            Comprar
+                        </button>
+                    }
+                    else
+                    {
+                        <a asp-controller="Auth"
+                           asp-action="Login"
+                           class="btn btn-outline-success mt-auto w-100">
+                            Entrar para comprar
+                        </a>
+                    }
 
                 </div>
             </div>

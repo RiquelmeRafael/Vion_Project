@@ -1,4 +1,10 @@
-﻿using Vion.Web.Services;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Vion.Domain.Entities;
+using Vion.Infrastructure.Persistence;
+using Vion.Infrastructure.Persistence.Seeds;
+using Vion.Web.Services;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,42 +14,112 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 // =======================
-// HTTP CLIENT (API)
+// DATABASE
+// =======================
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection")
+    )
+);
+
+// =======================
+// IDENTITY
+// =======================
+builder.Services
+    .AddIdentity<Usuario, IdentityRole<int>>(options =>
+    {
+        options.Password.RequireDigit = true;
+        options.Password.RequireUppercase = false;
+        options.Password.RequireNonAlphanumeric = false;
+        options.Password.RequiredLength = 6;
+    })
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddDefaultTokenProviders();
+
+// =======================
+// POLICIES
+// =======================
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly",
+        policy => policy.RequireRole("Admin"));
+
+    options.AddPolicy("ManagerOrAdmin",
+        policy => policy.RequireRole("Admin", "Gerente"));
+});
+
+// =======================
+// API SETTINGS (bind + validação)
+// =======================
+var apiBaseFromLegacyKey = builder.Configuration["ApiBaseUrl"];
+var apiSettingsSection = builder.Configuration.GetSection("ApiSettings");
+var apiSettings = apiSettingsSection.Exists()
+    ? apiSettingsSection.Get<ApiSettings>()
+    : null;
+
+// Permitir chave antiga ("ApiBaseUrl") como fallback
+var apiBaseRaw = string.IsNullOrWhiteSpace(apiBaseFromLegacyKey)
+    ? apiSettings?.BaseUrl
+    : apiBaseFromLegacyKey;
+
+if (string.IsNullOrWhiteSpace(apiBaseRaw))
+{
+    throw new InvalidOperationException(
+        "A configuração da API não foi encontrada. Defina 'ApiSettings:BaseUrl' (ou 'ApiBaseUrl' para compatibilidade).");
+}
+
+if (!Uri.TryCreate(apiBaseRaw, UriKind.Absolute, out var apiBaseUri))
+{
+    throw new InvalidOperationException(
+        "A configuração 'ApiSettings:BaseUrl' contém um valor inválido. Informe uma URL absoluta válida.");
+}
+
+// Registra ApiSettings para injeção se necessário em outros pontos
+builder.Services.Configure<ApiSettings>(apiSettingsSection);
+
+// =======================
+// API CLIENT
 // =======================
 builder.Services.AddHttpClient<IApiClient, ApiClient>(client =>
 {
-    var baseUrl = builder.Configuration["ApiSettings:BaseUrl"];
-
-    if (string.IsNullOrEmpty(baseUrl))
-        throw new InvalidOperationException("ApiSettings:BaseUrl não configurado");
-
-    client.BaseAddress = new Uri(baseUrl);
+    client.BaseAddress = apiBaseUri;
 });
 
 var app = builder.Build();
 
 // =======================
-// PIPELINE
+// SEED AUTOMÁTICO
 // =======================
-if (!app.Environment.IsDevelopment())
+using (var scope = app.Services.CreateScope())
 {
-    app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<AppDbContext>();
+
+    await DbSeeder.SeedAsync(context, services);
 }
 
-app.UseHttpsRedirection(); // ✅ IMPORTANTE
+// =======================
+// PIPELINE
+// =======================
+app.UseHttpsRedirection();
 app.UseStaticFiles();
+
 app.UseRouting();
 
-// =======================
-// ROTAS MVC
-// =======================
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapControllerRoute(
+    name: "areas",
+    pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}"
+);
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}"
 );
 
-// evita 404 estranho quando rota existe
-app.MapFallbackToController("Index", "Home");
-
 app.Run();
+
+// Tipo auxiliar local para bind de configuração
+internal sealed record ApiSettings(string? BaseUrl);
