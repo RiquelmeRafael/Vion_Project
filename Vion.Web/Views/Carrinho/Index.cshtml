@@ -1,0 +1,395 @@
+@model Vion.Web.Models.ViewModels.CarrinhoViewModel
+
+@{
+    ViewData["Title"] = "Carrinho";
+}
+
+<style>
+    /* Steps Styling */
+    .checkout-steps {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 3rem;
+        gap: 1rem;
+    }
+    .checkout-step {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #adb5bd;
+        font-weight: 500;
+    }
+    .checkout-step.active {
+        color: #000;
+        font-weight: 700;
+    }
+    .step-number {
+        width: 32px;
+        height: 32px;
+        background-color: #f8f9fa;
+        border: 2px solid #e9ecef;
+        color: #adb5bd;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.9rem;
+        font-weight: 700;
+        transition: all 0.3s ease;
+    }
+    .checkout-step.active .step-number {
+        background-color: #000;
+        border-color: #000;
+        color: #fff;
+    }
+    .checkout-divider {
+        width: 40px;
+        height: 2px;
+        background-color: #e9ecef;
+    }
+
+    /* Cart Item Styling */
+    .cart-item {
+        background: #fff;
+        padding: 1.5rem;
+        border-radius: 12px;
+        margin-bottom: 1rem;
+        box-shadow: 0 2px 15px rgba(0,0,0,0.03);
+        border: 1px solid #f1f3f5;
+        transition: transform 0.2s ease;
+    }
+    .cart-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    }
+    .cart-item-image {
+        width: 100%;
+        max-width: 120px;
+        aspect-ratio: 1;
+        object-fit: cover;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+    .cart-item-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: #212529;
+    }
+    
+    /* Quantity Selector */
+    .quantity-selector {
+        display: inline-flex;
+        align-items: center;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    .quantity-btn {
+        background: #f8f9fa;
+        border: none;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background 0.2s;
+        font-weight: bold;
+        color: #495057;
+    }
+    .quantity-btn:hover {
+        background: #e9ecef;
+    }
+    .quantity-input {
+        width: 40px;
+        height: 32px;
+        border: none;
+        text-align: center;
+        font-weight: 600;
+        font-size: 0.95rem;
+        background: #fff;
+        color: #212529;
+    }
+    /* Hide arrows in number input */
+    .quantity-input::-webkit-outer-spin-button,
+    .quantity-input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Summary Section */
+    .summary-section {
+        background: #fff;
+        padding: 2rem;
+        border-radius: 16px;
+        border: 1px solid #f1f3f5;
+        box-shadow: 0 5px 25px rgba(0,0,0,0.04);
+        position: sticky;
+        top: 2rem;
+    }
+    .summary-title {
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        font-size: 1.25rem;
+    }
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+        color: #6c757d;
+        font-size: 0.95rem;
+    }
+    .summary-row.total {
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 2px dashed #e9ecef;
+        font-weight: 800;
+        color: #212529;
+        font-size: 1.2rem;
+    }
+    .discount-row {
+        color: #198754;
+        font-weight: 500;
+    }
+    .cart-price {
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: #212529;
+    }
+    
+    /* Buttons */
+    .btn-checkout {
+        background-color: #0d6efd;
+        color: white;
+        padding: 14px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.3s;
+        border: none;
+        box-shadow: 0 4px 12px rgba(13, 110, 253, 0.2);
+    }
+    .btn-checkout:hover {
+        background-color: #0b5ed7;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(13, 110, 253, 0.3);
+        color: white;
+    }
+    .btn-modern-outline {
+        border: 2px solid #e9ecef;
+        color: #495057;
+        padding: 12px;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.2s;
+        display: block;
+        text-decoration: none;
+    }
+    .btn-modern-outline:hover {
+        border-color: #adb5bd;
+        color: #212529;
+        background: #f8f9fa;
+    }
+    .btn-remove {
+        color: #dc3545;
+        background: #fff0f1;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        text-decoration: none;
+        transition: all 0.2s;
+    }
+    .btn-remove:hover {
+        background: #dc3545;
+        color: #fff;
+    }
+    .input-modern {
+        border: 1px solid #dee2e6;
+        padding: 0.75rem 1rem;
+        border-radius: 8px 0 0 8px;
+    }
+    .input-modern:focus {
+        box-shadow: none;
+        border-color: #0d6efd;
+    }
+</style>
+
+<div class="container py-5">
+    <!-- Checkout Steps -->
+    <div class="checkout-steps">
+        <div class="checkout-step active">
+            <span class="step-number">1</span>
+            <span>Carrinho</span>
+        </div>
+        <div class="checkout-divider"></div>
+        <div class="checkout-step">
+            <span class="step-number">2</span>
+            <span>Identificação</span>
+        </div>
+        <div class="checkout-divider"></div>
+        <div class="checkout-step">
+            <span class="step-number">3</span>
+            <span>Pagamento</span>
+        </div>
+    </div>
+
+    @if (!Model.Itens.Any())
+    {
+        <div class="text-center py-5">
+            <i class="fa-solid fa-bag-shopping fa-3x mb-4 text-muted"></i>
+            <h4 class="mb-3">Seu carrinho está vazio</h4>
+            <p class="text-muted mb-4">Você ainda não adicionou nenhum produto.</p>
+            <a asp-controller="Home" asp-action="Catalog" class="btn btn-dark btn-lg rounded-pill px-5">
+                Ver Produtos
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            <!-- Cart Items -->
+            <div class="col-lg-8">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="mb-0 fw-bold">Seu Carrinho</h4>
+                    <div class="d-flex align-items-center gap-3">
+                        <span class="text-muted">@Model.Itens.Sum(i => i.Quantidade) itens</span>
+                        <a asp-action="Esvaziar" class="text-danger text-decoration-none small fw-bold" onclick="return confirm('Tem certeza que deseja esvaziar o carrinho?');">
+                            <i class="fa-solid fa-trash-can me-1"></i>Esvaziar
+                        </a>
+                    </div>
+                </div>
+
+                <div class="cart-items-container">
+                    @foreach (var item in Model.Itens)
+                    {
+                        <div class="cart-item">
+                            <div class="row align-items-center">
+                                <div class="col-4 col-md-3">
+                                    @if (!string.IsNullOrEmpty(item.ImagemUrl))
+                                    {
+                                        <img src="@item.ImagemUrl" alt="@item.Nome" class="cart-item-image">
+                                    }
+                                    else
+                                    {
+                                        <div class="bg-secondary d-flex align-items-center justify-content-center rounded" style="width: 100%; aspect-ratio: 1; color: white;">
+                                            <i class="fa-solid fa-image"></i>
+                                        </div>
+                                    }
+                                </div>
+                                <div class="col-8 col-md-9">
+                                    <div class="d-flex justify-content-between h-100 flex-column flex-md-row">
+                                        <div class="mb-3 mb-md-0">
+                                            <h5 class="cart-item-title">@item.Nome</h5>
+                                            <div class="cart-item-details mb-3">
+                                                <p class="mb-1 text-muted">Preço Unitário: @item.Preco.ToString("C")</p>
+                                                @if (!string.IsNullOrEmpty(item.Tamanho))
+                                                {
+                                                    <p class="mb-1 text-muted">Tamanho: @item.Tamanho</p>
+                                                }
+                                            </div>
+                                            
+                                            <form asp-action="AtualizarQuantidade" method="post" class="d-inline-block">
+                                                <input type="hidden" name="id" value="@item.ProdutoId" />
+                                                <div class="quantity-selector">
+                                                    <button type="button" class="quantity-btn" onclick="updateQuantity(this, -1)">-</button>
+                                                    <input type="number" name="quantidade" value="@item.Quantidade" min="1" class="quantity-input" readonly />
+                                                    <button type="button" class="quantity-btn" onclick="updateQuantity(this, 1)">+</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                        
+                                        <div class="d-flex flex-column align-items-end justify-content-between">
+                                            <div class="cart-price">@item.Total.ToString("C")</div>
+                                            <a asp-action="Remover" asp-route-id="@item.ProdutoId" class="btn-remove mt-3" title="Remover item">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Summary -->
+            <div class="col-lg-4 mt-5 mt-lg-0">
+                <div class="summary-section">
+                    <h5 class="summary-title">Resumo do Pedido</h5>
+                    
+                    <form asp-action="AplicarCupom" method="post" class="mb-4">
+                        <label class="form-label small text-muted">Código Promocional</label>
+                        <div class="input-group">
+                            <input type="text" name="codigoCupom" class="form-control input-modern" placeholder="Inserir código" value="@Model.CupomAplicado">
+                            <button type="submit" class="btn btn-light">Aplicar</button>
+                        </div>
+                        @if (!string.IsNullOrEmpty(Model.MensagemCupom))
+                        {
+                            <small class="d-block mt-2 text-@(Model.ValorDesconto > 0 ? "success" : "danger")">
+                                @Model.MensagemCupom
+                            </small>
+                        }
+                    </form>
+
+                    <div class="summary-row">
+                        <span>Subtotal</span>
+                        <span>@Model.Total.ToString("C")</span>
+                    </div>
+                    
+                    <div class="summary-row">
+                        <span>Frete</span>
+                        @if (Model.TotalFrete == 0)
+                        {
+                            <span class="text-success">Grátis</span>
+                        }
+                        else
+                        {
+                            <span>@Model.TotalFrete.ToString("C")</span>
+                        }
+                    </div>
+
+                    @if (Model.ValorDesconto > 0)
+                    {
+                        <div class="summary-row discount-row">
+                            <span>Desconto</span>
+                            <span>- @Model.ValorDesconto.ToString("C")</span>
+                        </div>
+                    }
+
+                    <div class="summary-row total">
+                        <span>Total</span>
+                        <span>@Model.TotalComFrete.ToString("C")</span>
+                    </div>
+
+                    <a asp-controller="Checkout" asp-action="Index" class="btn btn-checkout w-100 mb-3">
+                        Finalizar Compra
+                    </a>
+                    
+                    <a asp-controller="Home" asp-action="Catalog" class="btn btn-modern-outline w-100 text-center">
+                        Continuar Comprando
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        function updateQuantity(btn, change) {
+            const form = btn.closest('form');
+            const input = form.querySelector('input[name="quantidade"]');
+            let newValue = parseInt(input.value) + change;
+            
+            if (newValue < 1) newValue = 1;
+            
+            input.value = newValue;
+            form.submit();
+        }
+    </script>
+}

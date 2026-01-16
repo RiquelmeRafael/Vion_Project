@@ -1,0 +1,51 @@
+@model Vion.Domain.Entities.Cupom
+
+@{
+    ViewData["Title"] = "Editar Cupom";
+}
+
+<div class="admin-container">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="admin-card">
+                <div class="card-header">
+                    <h4 class="mb-0 text-dark">Editar Cupom</h4>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Edit">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                        <input type="hidden" asp-for="Id" />
+                        
+                        <div class="mb-4">
+                            <label asp-for="Codigo" class="admin-form-label">Código do Cupom</label>
+                            <input asp-for="Codigo" class="form-control admin-form-control" placeholder="Ex: DESC10" />
+                            <span asp-validation-for="Codigo" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="PercentualDesconto" class="admin-form-label">Desconto (%)</label>
+                            <input asp-for="PercentualDesconto" class="form-control admin-form-control" type="number" step="0.01" min="0" max="100" />
+                            <span asp-validation-for="PercentualDesconto" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-4 form-check form-switch">
+                            <input class="form-check-input" asp-for="Ativo" type="checkbox" role="switch" id="flexSwitchCheckDefault" style="width: 3em; height: 1.5em;" />
+                            <label class="form-check-label ms-2 pt-1 text-dark" for="flexSwitchCheckDefault">Cupom Ativo</label>
+                        </div>
+
+                        <div class="d-grid gap-3">
+                            <button type="submit" class="btn-admin-save">
+                                <i class="fa-solid fa-save me-2"></i> Salvar Alterações
+                            </button>
+                            <a asp-action="Index" class="btn-admin-cancel">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

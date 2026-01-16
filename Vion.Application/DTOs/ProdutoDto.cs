@@ -1,4 +1,4 @@
-﻿namespace Vion.Application.DTOs;
+namespace Vion.Application.DTOs;
 
 public class ProdutoDto
 {
@@ -15,5 +15,12 @@ public class ProdutoDto
 
     public string? Cor { get; set; }
     public int Estoque { get; set; }
+    public decimal? ValorFreteFixo { get; set; }
     public string? ImagemUrl { get; set; }
+    public string? ImagemUrl2 { get; set; }
+    public string? ImagemUrl3 { get; set; }
+    public string? ImagemUrl4 { get; set; }
+
+    public int? CupomId { get; set; }
+    public string? CupomCodigo { get; set; }
 }

@@ -32,8 +32,29 @@ public class ApiClient : IApiClient
         if (!string.IsNullOrWhiteSpace(ordem))
             url += $"ordem={ordem}&";
 
-        return await _http.GetFromJsonAsync<IEnumerable<ProdutoDto>>(url)
+        var options = new System.Text.Json.JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
+
+        return await _http.GetFromJsonAsync<IEnumerable<ProdutoDto>>(url, options)
                ?? Enumerable.Empty<ProdutoDto>();
+    }
+
+    public async Task<ProdutoDto?> GetProdutoByIdAsync(int id)
+    {
+        var options = new System.Text.Json.JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
+        try 
+        {
+            return await _http.GetFromJsonAsync<ProdutoDto>($"/api/Produtos/{id}", options);
+        }
+        catch (HttpRequestException)
+        {
+            return null;
+        }
     }
 
     public async Task<IEnumerable<CategoriaDto>> GetCategoriasAsync()

@@ -1,0 +1,86 @@
+@model IEnumerable<Vion.Domain.Entities.Produto>
+
+@{
+    ViewData["Title"] = "Gerenciar Produtos";
+}
+
+<div class="admin-container">
+    <div class="admin-header">
+        <h1 class="admin-title">Gerenciar Produtos</h1>
+        <a asp-action="Create" class="btn btn-success btn-lg">
+            <i class="fa-solid fa-plus"></i> Novo Produto
+        </a>
+    </div>
+
+    <div class="admin-card mb-4">
+        <div class="card-body">
+            <form asp-action="Index" method="get" class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label class="admin-form-label">Filtrar por Categoria</label>
+                    <select name="categoriaId" class="admin-form-control w-100" asp-items="ViewBag.CategoriaId" onchange="this.form.submit()">
+                        <option value="">Todas as Categorias</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="admin-card">
+        <div class="card-body p-0">
+            <table class="table admin-table table-hover">
+                <thead>
+                    <tr>
+                        <th>@Html.DisplayNameFor(model => model.Nome)</th>
+                        <th>@Html.DisplayNameFor(model => model.Preco)</th>
+                        <th>@Html.DisplayNameFor(model => model.Categoria)</th>
+                        <th>Tamanhos/Estoque</th>
+                        <th class="text-end">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model) {
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    @if (!string.IsNullOrEmpty(item.ImagemUrl))
+                                    {
+                                        <img src="@item.ImagemUrl" alt="@item.Nome" class="rounded me-3" style="width: 40px; height: 40px; object-fit: cover;">
+                                    }
+                                    else
+                                    {
+                                        <div class="rounded me-3 d-flex align-items-center justify-content-center bg-secondary text-white" style="width: 40px; height: 40px;">
+                                            <i class="fas fa-image"></i>
+                                        </div>
+                                    }
+                                    <span class="fw-bold text-dark">@Html.DisplayFor(modelItem => item.Nome)</span>
+                                </div>
+                            </td>
+                            <td class="text-dark">@Html.DisplayFor(modelItem => item.Preco)</td>
+                            <td class="text-dark">@Html.DisplayFor(modelItem => item.Categoria.Nome)</td>
+                            <td>
+                                @if (item.Tamanho != null)
+                                {
+                                    <span class="badge bg-secondary">@item.Tamanho.Nome</span>
+                                    <span class="ms-1 small text-muted">Estoque: @item.Estoque</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted small">N/A</span>
+                                    <span class="ms-1 small text-muted">Estoque: @item.Estoque</span>
+                                }
+                            </td>
+                            <td class="text-end">
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn-action btn-action-edit" title="Editar">
+                                    <i class="fa-solid fa-pen"></i>
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn-action btn-action-delete" title="Excluir">
+                                    <i class="fa-solid fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

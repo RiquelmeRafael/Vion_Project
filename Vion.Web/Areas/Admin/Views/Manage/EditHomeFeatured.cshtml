@@ -1,0 +1,93 @@
+@model List<Vion.Domain.Entities.HomeFeaturedItem>
+
+@{
+    ViewData["Title"] = "Editar Destaques da semana";
+}
+
+<div class="admin-container">
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-9">
+            <div class="admin-card">
+                <div class="card-header">
+                    <h4 class="mb-0 text-dark">Destaques da semana</h4>
+                </div>
+                <div class="card-body">
+                    <form asp-action="EditHomeFeatured" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        @for (var i = 0; i < Model.Count; i++)
+                        {
+                            <input type="hidden" asp-for="@Model[i].Id" />
+                            <input type="hidden" asp-for="@Model[i].Position" />
+
+                            <div class="mb-3 mt-2">
+                                <h5 class="mb-0 text-dark">Card @(Model[i].Position == 0 ? i + 1 : Model[i].Position)</h5>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-3 mb-3">
+                                    <label asp-for="@Model[i].Tag" class="admin-form-label">Tag</label>
+                                    <input asp-for="@Model[i].Tag" class="form-control admin-form-control" />
+                                    <span asp-validation-for="@Model[i].Tag" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-5 mb-3">
+                                    <label asp-for="@Model[i].Name" class="admin-form-label">Título</label>
+                                    <input asp-for="@Model[i].Name" class="form-control admin-form-control" />
+                                    <span asp-validation-for="@Model[i].Name" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-2 mb-3">
+                                    <label asp-for="@Model[i].Price" class="admin-form-label">Preço</label>
+                                    <input asp-for="@Model[i].Price" class="form-control admin-form-control" type="number" step="0.01" min="0" />
+                                    <span asp-validation-for="@Model[i].Price" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-2 mb-3">
+                                    <label asp-for="@Model[i].PillText" class="admin-form-label">Badge</label>
+                                    <input asp-for="@Model[i].PillText" class="form-control admin-form-control" />
+                                    <span asp-validation-for="@Model[i].PillText" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="@Model[i].ImageUrl" class="admin-form-label">Imagem (URL ou caminho)</label>
+                                    <input asp-for="@Model[i].ImageUrl" class="form-control admin-form-control" placeholder="Ex: /images/products/seu-tenis.webp" />
+                                    <span asp-validation-for="@Model[i].ImageUrl" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label asp-for="@Model[i].CategoriaId" class="admin-form-label">Categoria do link</label>
+                                    <select asp-for="@Model[i].CategoriaId" asp-items="(SelectList)ViewBag.Categorias" class="form-select admin-form-control">
+                                        <option value="">Usar categoria padrão de Tênis</option>
+                                    </select>
+                                    <span asp-validation-for="@Model[i].CategoriaId" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-2 mb-3 d-flex align-items-end">
+                                    <div class="form-check">
+                                        <input asp-for="@Model[i].IsActive" class="form-check-input" />
+                                        <label asp-for="@Model[i].IsActive" class="form-check-label">Ativo</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            @if (i < Model.Count - 1)
+                            {
+                                <hr class="my-4" />
+                            }
+                        }
+
+                        <div class="d-grid gap-3 mt-4">
+                            <button type="submit" class="btn-admin-save">
+                                <i class="fa-solid fa-save me-2"></i> Salvar destaques
+                            </button>
+                            <a asp-action="Index" class="btn-admin-cancel">Voltar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+

@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿using System.ComponentModel.DataAnnotations;
 
 namespace Vion.Web.Models
 {
@@ -10,5 +10,7 @@ namespace Vion.Web.Models
         [Required]
         [DataType(DataType.Password)]
         public string Senha { get; set; } = "";
+
+        public string? ReturnUrl { get; set; }
     }
 }

@@ -1,0 +1,45 @@
+@model IEnumerable<Vion.Domain.Entities.Tamanho>
+
+@{
+    ViewData["Title"] = "Tamanhos";
+}
+
+<div class="admin-container">
+    <div class="admin-header">
+        <h1 class="admin-title">Tamanhos</h1>
+        <a asp-action="Create" class="btn-admin-create">
+            <i class="fa-solid fa-plus"></i> Novo Tamanho
+        </a>
+    </div>
+
+    <div class="admin-card">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table admin-table">
+                    <thead>
+                        <tr>
+                            <th>@Html.DisplayNameFor(model => model.Nome)</th>
+                            <th class="text-end">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="align-middle">@Html.DisplayFor(modelItem => item.Nome)</td>
+                                <td class="text-end">
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn-action btn-action-edit" title="Editar">
+                                        <i class="fa-solid fa-pen"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn-action btn-action-delete" title="Excluir">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

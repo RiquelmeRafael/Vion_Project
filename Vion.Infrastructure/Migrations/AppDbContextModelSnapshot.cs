@@ -155,6 +155,76 @@ namespace Vion.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Vion.Domain.Entities.Avaliacao", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Comentario")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<DateTime>("DataAvaliacao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ImagemUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Nota")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PedidoId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProdutoId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PedidoId");
+
+                    b.HasIndex("ProdutoId");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("Avaliacoes");
+                });
+
+            modelBuilder.Entity("Vion.Domain.Entities.CarrinhoItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DataAdicionado")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ProdutoId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantidade")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProdutoId");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("CarrinhoItens");
+                });
+
             modelBuilder.Entity("Vion.Domain.Entities.Categoria", b =>
                 {
                     b.Property<int>("Id")
@@ -170,6 +240,344 @@ namespace Vion.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categorias");
+                });
+
+            modelBuilder.Entity("Vion.Domain.Entities.ChatConversation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("AtendenteId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ClienteId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CriadoEm")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("Encerrado")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AtendenteId");
+
+                    b.HasIndex("ClienteId");
+
+                    b.ToTable("ChatConversations");
+                });
+
+            modelBuilder.Entity("Vion.Domain.Entities.ChatMessage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Conteudo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ConversationId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("EnviadoEm")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("Lido")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("RemetenteEhStaff")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("RemetenteId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ConversationId");
+
+                    b.HasIndex("RemetenteId");
+
+                    b.ToTable("ChatMessages");
+                });
+
+            modelBuilder.Entity("Vion.Domain.Entities.Cupom", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Ativo")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Codigo")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<decimal>("PercentualDesconto")
+                        .HasColumnType("decimal(5,2)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Cupons");
+                });
+
+            modelBuilder.Entity("Vion.Domain.Entities.Favorito", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DataAdicionado")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ProdutoId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProdutoId");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("Favoritos");
+                });
+
+            modelBuilder.Entity("Vion.Domain.Entities.HomeFeaturedItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("CategoriaId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PillText")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Position")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Tag")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("HomeFeaturedItems");
+                });
+
+            modelBuilder.Entity("Vion.Domain.Entities.HomeHero", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AccentColorHex")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CardBadgeText")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("CardCategoriaId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CardImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("CardPriceCurrent")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("CardPriceOld")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("CardSizeText")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CardTag")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CardTitle")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Eyebrow")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("MainButtonCategoriaId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("MainButtonText")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SecondaryButtonText")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Subtitle")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TitleHighlight")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TitlePrefix")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TitleSuffix")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("HomeHeros");
+                });
+
+            modelBuilder.Entity("Vion.Domain.Entities.ItemPedido", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("PedidoId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("PrecoUnitario")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("ProdutoId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantidade")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PedidoId");
+
+                    b.HasIndex("ProdutoId");
+
+                    b.ToTable("ItensPedido");
+                });
+
+            modelBuilder.Entity("Vion.Domain.Entities.Pedido", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Cep")
+                        .HasMaxLength(9)
+                        .HasColumnType("nvarchar(9)");
+
+                    b.Property<string>("Cidade")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Cpf")
+                        .HasMaxLength(14)
+                        .HasColumnType("nvarchar(14)");
+
+                    b.Property<int?>("CupomId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DataPedido")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EmailCliente")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Endereco")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Estado")
+                        .HasMaxLength(2)
+                        .HasColumnType("nvarchar(2)");
+
+                    b.Property<string>("FormaPagamento")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("NomeCliente")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("ValorDesconto")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("ValorFrete")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("ValorTotal")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CupomId");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("Pedidos");
                 });
 
             modelBuilder.Entity("Vion.Domain.Entities.Produto", b =>
@@ -190,6 +598,9 @@ namespace Vion.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("CupomId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Descricao")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -199,6 +610,15 @@ namespace Vion.Infrastructure.Migrations
 
                     b.Property<string>("ImagemUrl")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImagemUrl2")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImagemUrl3")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImagemUrl4")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Nome")
@@ -212,9 +632,14 @@ namespace Vion.Infrastructure.Migrations
                     b.Property<int>("TamanhoId")
                         .HasColumnType("int");
 
+                    b.Property<decimal?>("ValorFreteFixo")
+                        .HasColumnType("decimal(18,2)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CategoriaId");
+
+                    b.HasIndex("CupomId");
 
                     b.HasIndex("TamanhoId");
 
@@ -383,6 +808,142 @@ namespace Vion.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Vion.Domain.Entities.Avaliacao", b =>
+                {
+                    b.HasOne("Vion.Domain.Entities.Pedido", "Pedido")
+                        .WithMany()
+                        .HasForeignKey("PedidoId");
+
+                    b.HasOne("Vion.Domain.Entities.Produto", "Produto")
+                        .WithMany("Avaliacoes")
+                        .HasForeignKey("ProdutoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Vion.Domain.Entities.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Pedido");
+
+                    b.Navigation("Produto");
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("Vion.Domain.Entities.CarrinhoItem", b =>
+                {
+                    b.HasOne("Vion.Domain.Entities.Produto", "Produto")
+                        .WithMany()
+                        .HasForeignKey("ProdutoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Vion.Domain.Entities.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Produto");
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("Vion.Domain.Entities.ChatConversation", b =>
+                {
+                    b.HasOne("Vion.Domain.Entities.Usuario", "Atendente")
+                        .WithMany()
+                        .HasForeignKey("AtendenteId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("Vion.Domain.Entities.Usuario", "Cliente")
+                        .WithMany()
+                        .HasForeignKey("ClienteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Atendente");
+
+                    b.Navigation("Cliente");
+                });
+
+            modelBuilder.Entity("Vion.Domain.Entities.ChatMessage", b =>
+                {
+                    b.HasOne("Vion.Domain.Entities.ChatConversation", "Conversation")
+                        .WithMany("Mensagens")
+                        .HasForeignKey("ConversationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Vion.Domain.Entities.Usuario", "Remetente")
+                        .WithMany()
+                        .HasForeignKey("RemetenteId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Conversation");
+
+                    b.Navigation("Remetente");
+                });
+
+            modelBuilder.Entity("Vion.Domain.Entities.Favorito", b =>
+                {
+                    b.HasOne("Vion.Domain.Entities.Produto", "Produto")
+                        .WithMany()
+                        .HasForeignKey("ProdutoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Vion.Domain.Entities.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Produto");
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("Vion.Domain.Entities.ItemPedido", b =>
+                {
+                    b.HasOne("Vion.Domain.Entities.Pedido", "Pedido")
+                        .WithMany("Itens")
+                        .HasForeignKey("PedidoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Vion.Domain.Entities.Produto", "Produto")
+                        .WithMany()
+                        .HasForeignKey("ProdutoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Pedido");
+
+                    b.Navigation("Produto");
+                });
+
+            modelBuilder.Entity("Vion.Domain.Entities.Pedido", b =>
+                {
+                    b.HasOne("Vion.Domain.Entities.Cupom", "Cupom")
+                        .WithMany()
+                        .HasForeignKey("CupomId");
+
+                    b.HasOne("Vion.Domain.Entities.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cupom");
+
+                    b.Navigation("Usuario");
+                });
+
             modelBuilder.Entity("Vion.Domain.Entities.Produto", b =>
                 {
                     b.HasOne("Vion.Domain.Entities.Categoria", "Categoria")
@@ -391,6 +952,10 @@ namespace Vion.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("Vion.Domain.Entities.Cupom", "Cupom")
+                        .WithMany("Produtos")
+                        .HasForeignKey("CupomId");
+
                     b.HasOne("Vion.Domain.Entities.Tamanho", "Tamanho")
                         .WithMany("Produtos")
                         .HasForeignKey("TamanhoId")
@@ -398,6 +963,8 @@ namespace Vion.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Categoria");
+
+                    b.Navigation("Cupom");
 
                     b.Navigation("Tamanho");
                 });
@@ -416,6 +983,26 @@ namespace Vion.Infrastructure.Migrations
             modelBuilder.Entity("Vion.Domain.Entities.Categoria", b =>
                 {
                     b.Navigation("Produtos");
+                });
+
+            modelBuilder.Entity("Vion.Domain.Entities.ChatConversation", b =>
+                {
+                    b.Navigation("Mensagens");
+                });
+
+            modelBuilder.Entity("Vion.Domain.Entities.Cupom", b =>
+                {
+                    b.Navigation("Produtos");
+                });
+
+            modelBuilder.Entity("Vion.Domain.Entities.Pedido", b =>
+                {
+                    b.Navigation("Itens");
+                });
+
+            modelBuilder.Entity("Vion.Domain.Entities.Produto", b =>
+                {
+                    b.Navigation("Avaliacoes");
                 });
 
             modelBuilder.Entity("Vion.Domain.Entities.Tamanho", b =>

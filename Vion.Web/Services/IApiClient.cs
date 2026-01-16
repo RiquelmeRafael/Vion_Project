@@ -11,6 +11,8 @@ public interface IApiClient
         string? ordem = null
     );
 
+    Task<ProdutoDto?> GetProdutoByIdAsync(int id);
+
     Task<IEnumerable<CategoriaDto>> GetCategoriasAsync();
     Task<IEnumerable<TamanhoDto>> GetTamanhosAsync();
 }

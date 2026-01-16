@@ -34,7 +34,13 @@ public class ProdutosController : ControllerBase
             Categoria = p.Categoria.Nome,
             Tamanho = p.Tamanho.Nome,
             p.Estoque,
-            p.ImagemUrl
+            p.ImagemUrl,
+            p.ImagemUrl2,
+            p.ImagemUrl3,
+            p.ImagemUrl4,
+            p.ValorFreteFixo,
+            p.CupomId,
+            CupomCodigo = p.Cupom != null && p.Cupom.Ativo ? p.Cupom.Codigo : null
         });
 
         return Ok(response);
@@ -60,7 +66,13 @@ public class ProdutosController : ControllerBase
             Tamanho = produto.Tamanho.Nome,
             produto.Cor,
             produto.Estoque,
-            produto.ImagemUrl
+            produto.ImagemUrl,
+            produto.ImagemUrl2,
+            produto.ImagemUrl3,
+            produto.ImagemUrl4,
+            produto.ValorFreteFixo,
+            produto.CupomId,
+            CupomCodigo = produto.Cupom != null && produto.Cupom.Ativo ? produto.Cupom.Codigo : null
         });
     }
 
@@ -80,6 +92,9 @@ public class ProdutosController : ControllerBase
             Cor = dto.Cor,
             Estoque = dto.Estoque,
             ImagemUrl = dto.ImagemUrl,
+            ImagemUrl2 = dto.ImagemUrl2,
+            ImagemUrl3 = dto.ImagemUrl3,
+            ImagemUrl4 = dto.ImagemUrl4,
             CreatedAt = DateTime.UtcNow
         };
 
@@ -90,7 +105,7 @@ public class ProdutosController : ControllerBase
     }
 
     // =======================
-    // PUT (CORRIGIDO — SEM REMOVER NADA)
+    // PUT (CORRIGIDO ï¿½ SEM REMOVER NADA)
     // =======================
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(int id, [FromBody] ProdutoUpdateDto dto)
@@ -105,8 +120,11 @@ public class ProdutosController : ControllerBase
         produto.Cor = dto.Cor;
         produto.Estoque = dto.Estoque;
         produto.ImagemUrl = dto.ImagemUrl;
+        produto.ImagemUrl2 = dto.ImagemUrl2;
+        produto.ImagemUrl3 = dto.ImagemUrl3;
+        produto.ImagemUrl4 = dto.ImagemUrl4;
 
-        // ?? PROTEÇÃO CONTRA FK INVÁLIDA
+        // ?? PROTEO CONTRA FK INVLIDAINVï¿½LIDA
         if (dto.CategoriaId > 0)
             produto.CategoriaId = dto.CategoriaId;
 

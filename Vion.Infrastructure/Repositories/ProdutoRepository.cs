@@ -20,6 +20,7 @@ public class ProdutoRepository : IProdutoRepository
         return await _context.Produtos
             .Include(p => p.Categoria)
             .Include(p => p.Tamanho)
+            .Include(p => p.Cupom)
             .ToListAsync();
     }
 
@@ -28,6 +29,7 @@ public class ProdutoRepository : IProdutoRepository
         var query = _context.Produtos
             .Include(p => p.Categoria)
             .Include(p => p.Tamanho)
+            .Include(p => p.Cupom)
             .AsQueryable();
 
         if (filter.CategoriaId.HasValue)
@@ -66,6 +68,7 @@ public class ProdutoRepository : IProdutoRepository
         return await _context.Produtos
             .Include(p => p.Categoria)
             .Include(p => p.Tamanho)
+            .Include(p => p.Cupom)
             .FirstOrDefaultAsync(p => p.Id == id);
     }
 

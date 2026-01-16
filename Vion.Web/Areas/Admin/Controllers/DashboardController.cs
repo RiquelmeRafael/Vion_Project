@@ -1,5 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Vion.Web.Areas.Admin.Services;
 
 namespace Vion.Web.Areas.Admin.Controllers
 {
@@ -7,9 +8,17 @@ namespace Vion.Web.Areas.Admin.Controllers
     [Authorize(Roles = "Admin")]
     public class DashboardController : Controller
     {
-        public IActionResult Index()
+        private readonly DashboardService _service;
+
+        public DashboardController(DashboardService service)
         {
-            return View();
+            _service = service;
+        }
+
+        public async Task<IActionResult> Index()
+        {
+            var data = await _service.GetDashboardDataAsync();
+            return View(data);
         }
     }
 }

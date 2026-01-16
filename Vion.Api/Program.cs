@@ -24,7 +24,12 @@ builder.Services.AddSwaggerGen(c =>
 // =======================
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(
-        builder.Configuration.GetConnectionString("DefaultConnection")
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        sqlOptions => sqlOptions.EnableRetryOnFailure(
+            maxRetryCount: 5,
+            maxRetryDelay: TimeSpan.FromSeconds(30),
+            errorNumbersToAdd: null)
+            .CommandTimeout(300) // Aumenta timeout para 5 minutos
     )
 );
 

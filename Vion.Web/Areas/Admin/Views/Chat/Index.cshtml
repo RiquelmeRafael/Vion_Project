@@ -1,0 +1,77 @@
+@model IEnumerable<Vion.Domain.Entities.ChatConversation>
+
+@{
+    ViewData["Title"] = "Gerenciamento de Chat";
+}
+
+<div class="admin-container">
+    <div class="admin-header">
+        <h1 class="admin-title">Atendimento ao Cliente</h1>
+        <p class="text-muted mb-0">Gerencie as conversas e suporte aos clientes</p>
+    </div>
+
+    <div class="admin-card">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table admin-table mb-0">
+                    <thead>
+                        <tr>
+                            <th class="ps-4">Cliente</th>
+                            <th>Início</th>
+                            <th>Status</th>
+                            <th class="pe-4 text-end">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="ps-4">
+                                        <div class="d-flex align-items-center gap-3">
+                                            <div class="rounded-circle bg-primary bg-opacity-10 d-flex align-items-center justify-content-center text-primary fw-bold" style="width: 40px; height: 40px;">
+                                                @item.Cliente.UserName?.Substring(0, 1).ToUpper()
+                                            </div>
+                                            <div>
+                                                <div class="fw-semibold text-dark">@item.Cliente.UserName</div>
+                                                <div class="small text-muted">@item.Cliente.Email</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-muted">
+                                        @item.CriadoEm.ToString("dd/MM/yyyy HH:mm")
+                                    </td>
+                                    <td>
+                                        @if (item.Encerrado)
+                                        {
+                                            <span class="badge bg-light text-secondary border">Encerrado</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-success bg-opacity-10 text-success">Em Aberto</span>
+                                        }
+                                    </td>
+                                    <td class="pe-4 text-end">
+                                        <a asp-action="Detalhes" asp-route-id="@item.Id" class="btn btn-sm btn-primary px-3 rounded-pill">
+                                            <i class="bi bi-chat-text me-1"></i> Abrir Chat
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="4" class="text-center py-5 text-muted">
+                                    <i class="bi bi-inbox fs-1 d-block mb-2 opacity-25"></i>
+                                    Nenhuma conversa iniciada.
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

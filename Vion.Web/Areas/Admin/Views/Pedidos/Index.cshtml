@@ -1,0 +1,78 @@
+@model IEnumerable<Vion.Domain.Entities.Pedido>
+
+@{
+    ViewData["Title"] = "Gerenciar Pedidos";
+    var currentStatus = ViewData["CurrentStatus"] as string;
+}
+
+<div class="admin-container">
+    <div class="admin-header">
+        <h1 class="admin-title">Gerenciar Pedidos</h1>
+    </div>
+
+    <div class="admin-card mb-4">
+        <div class="card-body">
+            <div class="d-flex flex-wrap gap-2">
+                <a asp-action="Index" asp-route-status="" class="btn btn-lg @(string.IsNullOrEmpty(currentStatus) ? "btn-light fw-bold" : "btn-outline-secondary")">Todos</a>
+                <a asp-action="Index" asp-route-status="Pendente" class="btn btn-lg @(currentStatus == "Pendente" ? "btn-warning text-dark fw-bold" : "btn-outline-warning")">Pendentes</a>
+                <a asp-action="Index" asp-route-status="Aprovado" class="btn btn-lg @(currentStatus == "Aprovado" ? "btn-info text-dark fw-bold" : "btn-outline-info")">Aprovados</a>
+                <a asp-action="Index" asp-route-status="Em Transporte" class="btn btn-lg @(currentStatus == "Em Transporte" ? "btn-primary fw-bold" : "btn-outline-primary")">Em Transporte</a>
+                <a asp-action="Index" asp-route-status="Entregue" class="btn btn-lg @(currentStatus == "Entregue" ? "btn-success fw-bold" : "btn-outline-success")">Entregues</a>
+                <a asp-action="Index" asp-route-status="Cancelado" class="btn btn-lg @(currentStatus == "Cancelado" ? "btn-danger fw-bold" : "btn-outline-danger")">Cancelados</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="admin-card">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table admin-table table-hover">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Data</th>
+                            <th>Cliente</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                            <th class="text-end">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="text-dark fw-bold">@item.Id</td>
+                                <td class="text-dark">@item.DataPedido.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
+                                <td class="text-dark">@(item.Usuario?.Nome ?? item.NomeCliente)</td>
+                                <td class="text-success fw-bold">@item.ValorTotal.ToString("C")</td>
+                                <td>
+                                    <span class="badge rounded-pill px-3 py-2 @GetStatusBadgeClass(item.Status)">@item.Status</span>
+                                </td>
+                                <td class="text-end">
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn-action btn-action-edit" title="Detalhes" style="background-color: #0dcaf0; border-color: #0dcaf0; color: #000;">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    public string GetStatusBadgeClass(string status)
+    {
+        return status switch
+        {
+            "Pendente" => "bg-warning text-dark",
+            "Aprovado" => "bg-info text-dark",
+            "Em Transporte" => "bg-primary",
+            "Entregue" => "bg-success",
+            "Cancelado" => "bg-danger",
+            _ => "bg-secondary"
+        };
+    }
+}

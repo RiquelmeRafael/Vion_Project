@@ -1,0 +1,124 @@
+@model Vion.Domain.Entities.Pedido
+
+@{
+    ViewData["Title"] = "Detalhes do Pedido #" + Model.Id;
+}
+
+<div class="admin-container">
+    <div class="admin-header">
+        <h1 class="admin-title">Pedido #@Model.Id</h1>
+        <a asp-action="Index" class="btn-admin-cancel py-2 px-4">Voltar</a>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="admin-card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0 text-dark">Itens do Pedido</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table admin-table mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Produto</th>
+                                    <th>Qtd</th>
+                                    <th>Preço Unit.</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.Itens)
+                                {
+                                    <tr>
+                                        <td class="text-dark">@(item.Produto?.Nome ?? "Produto Removido")</td>
+                                        <td class="text-dark">@item.Quantidade</td>
+                                        <td class="text-dark">@item.PrecoUnitario.ToString("C")</td>
+                                        <td class="text-success fw-bold">@((item.Quantidade * item.PrecoUnitario).ToString("C"))</td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot class="bg-light text-dark">
+                                <tr>
+                                    <td colspan="3" class="text-end border-0 pt-3">Subtotal:</td>
+                                    <td class="border-0 pt-3">@Model.ValorTotal.ToString("C")</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" class="text-end border-0">Frete:</td>
+                                    <td class="border-0">@Model.ValorFrete.ToString("C")</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" class="text-end border-0 pb-3"><strong class="h5">Total Geral:</strong></td>
+                                    <td class="border-0 pb-3"><strong class="h5 text-success">@((Model.ValorTotal + Model.ValorFrete).ToString("C"))</strong></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin-card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0 text-dark">Dados de Entrega</h5>
+                </div>
+                <div class="card-body text-dark">
+                    <p class="mb-2"><strong class="text-muted">Destinatário:</strong> @Model.NomeCliente</p>
+                    <p class="mb-2"><strong class="text-muted">Endereço:</strong> @Model.Endereco, @Model.Cidade - @Model.Estado</p>
+                    <p class="mb-0"><strong class="text-muted">CEP:</strong> @Model.Cep</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="admin-card mb-4">
+                <div class="card-header bg-light border-bottom">
+                    <h5 class="mb-0 text-dark">Gerenciar Status</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="admin-form-label d-block">Status Atual</label>
+                        <span class="badge @(Model.Status == "Pendente" ? "bg-warning text-dark" : Model.Status == "Entregue" ? "bg-success" : Model.Status == "Cancelado" ? "bg-danger" : "bg-primary") fs-6 w-100 p-2">
+                            @Model.Status
+                        </span>
+                    </div>
+                    
+                    <form asp-action="AtualizarStatus" method="post" class="d-grid gap-2">
+                        <input type="hidden" name="id" value="@Model.Id" />
+                        
+                        @if(Model.Status == "Pendente") {
+                            <button type="submit" name="novoStatus" value="Aprovado" class="btn btn-info text-dark fw-bold">Aprovar Pedido</button>
+                            <button type="submit" name="novoStatus" value="Cancelado" class="btn btn-outline-danger fw-bold">Cancelar Pedido</button>
+                        }
+                        
+                        @if(Model.Status == "Aprovado") {
+                            <button type="submit" name="novoStatus" value="Em Transporte" class="btn btn-primary fw-bold">Enviar (Em Transporte)</button>
+                            <button type="submit" name="novoStatus" value="Cancelado" class="btn btn-outline-danger fw-bold">Cancelar Pedido</button>
+                        }
+                        
+                        @if(Model.Status == "Em Transporte") {
+                            <button type="submit" name="novoStatus" value="Entregue" class="btn btn-success fw-bold">Confirmar Entrega</button>
+                        }
+                        
+                        @if(Model.Status == "Entregue" || Model.Status == "Cancelado") {
+                            <div class="alert alert-secondary text-center mb-0 border-0 bg-dark text-muted">
+                                Pedido Finalizado
+                            </div>
+                        }
+                    </form>
+                </div>
+            </div>
+
+            <div class="admin-card">
+                <div class="card-header">
+                    <h5 class="mb-0 text-dark">Informações Adicionais</h5>
+                </div>
+                <div class="card-body text-dark">
+                    <p class="mb-2"><strong class="text-muted">Data:</strong> @Model.DataPedido.ToString("dd/MM/yyyy HH:mm")</p>
+                    <p class="mb-2"><strong class="text-muted">Pagamento:</strong> @Model.FormaPagamento</p>
+                    <p class="mb-2"><strong class="text-muted">CPF:</strong> @Model.Cpf</p>
+                    <p class="mb-0"><strong class="text-muted">Email:</strong> @Model.EmailCliente</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

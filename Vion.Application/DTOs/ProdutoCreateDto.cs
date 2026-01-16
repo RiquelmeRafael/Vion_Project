@@ -1,4 +1,4 @@
-﻿namespace Vion.Application.DTOs;
+namespace Vion.Application.DTOs;
 
 public class ProdutoCreateDto
 {
@@ -10,4 +10,7 @@ public class ProdutoCreateDto
     public string Cor { get; set; } = string.Empty;
     public int Estoque { get; set; }
     public string? ImagemUrl { get; set; }
+    public string? ImagemUrl2 { get; set; }
+    public string? ImagemUrl3 { get; set; }
+    public string? ImagemUrl4 { get; set; }
 }

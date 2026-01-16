@@ -12,8 +12,8 @@ using Vion.Infrastructure.Persistence;
 namespace Vion.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260109164411_InitialInicial")]
-    partial class InitialInicial
+    [Migration("20260112052547_AdicionarMaisImagensProduto")]
+    partial class AdicionarMaisImagensProduto
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -175,6 +175,158 @@ namespace Vion.Infrastructure.Migrations
                     b.ToTable("Categorias");
                 });
 
+            modelBuilder.Entity("Vion.Domain.Entities.Cupom", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Ativo")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Codigo")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<decimal>("PercentualDesconto")
+                        .HasColumnType("decimal(5,2)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Cupons");
+                });
+
+            modelBuilder.Entity("Vion.Domain.Entities.Favorito", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DataAdicionado")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ProdutoId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProdutoId");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("Favoritos");
+                });
+
+            modelBuilder.Entity("Vion.Domain.Entities.ItemPedido", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("PedidoId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("PrecoUnitario")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("ProdutoId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantidade")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PedidoId");
+
+                    b.HasIndex("ProdutoId");
+
+                    b.ToTable("ItensPedido");
+                });
+
+            modelBuilder.Entity("Vion.Domain.Entities.Pedido", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Cep")
+                        .HasMaxLength(9)
+                        .HasColumnType("nvarchar(9)");
+
+                    b.Property<string>("Cidade")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Cpf")
+                        .HasMaxLength(14)
+                        .HasColumnType("nvarchar(14)");
+
+                    b.Property<int?>("CupomId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DataPedido")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EmailCliente")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Endereco")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Estado")
+                        .HasMaxLength(2)
+                        .HasColumnType("nvarchar(2)");
+
+                    b.Property<string>("FormaPagamento")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("NomeCliente")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("ValorDesconto")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("ValorFrete")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("ValorTotal")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CupomId");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("Pedidos");
+                });
+
             modelBuilder.Entity("Vion.Domain.Entities.Produto", b =>
                 {
                     b.Property<int>("Id")
@@ -193,6 +345,9 @@ namespace Vion.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("CupomId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Descricao")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -202,6 +357,15 @@ namespace Vion.Infrastructure.Migrations
 
                     b.Property<string>("ImagemUrl")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImagemUrl2")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImagemUrl3")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImagemUrl4")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Nome")
@@ -215,9 +379,14 @@ namespace Vion.Infrastructure.Migrations
                     b.Property<int>("TamanhoId")
                         .HasColumnType("int");
 
+                    b.Property<decimal?>("ValorFreteFixo")
+                        .HasColumnType("decimal(18,2)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CategoriaId");
+
+                    b.HasIndex("CupomId");
 
                     b.HasIndex("TamanhoId");
 
@@ -386,6 +555,61 @@ namespace Vion.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Vion.Domain.Entities.Favorito", b =>
+                {
+                    b.HasOne("Vion.Domain.Entities.Produto", "Produto")
+                        .WithMany()
+                        .HasForeignKey("ProdutoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Vion.Domain.Entities.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Produto");
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("Vion.Domain.Entities.ItemPedido", b =>
+                {
+                    b.HasOne("Vion.Domain.Entities.Pedido", "Pedido")
+                        .WithMany("Itens")
+                        .HasForeignKey("PedidoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Vion.Domain.Entities.Produto", "Produto")
+                        .WithMany()
+                        .HasForeignKey("ProdutoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Pedido");
+
+                    b.Navigation("Produto");
+                });
+
+            modelBuilder.Entity("Vion.Domain.Entities.Pedido", b =>
+                {
+                    b.HasOne("Vion.Domain.Entities.Cupom", "Cupom")
+                        .WithMany()
+                        .HasForeignKey("CupomId");
+
+                    b.HasOne("Vion.Domain.Entities.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cupom");
+
+                    b.Navigation("Usuario");
+                });
+
             modelBuilder.Entity("Vion.Domain.Entities.Produto", b =>
                 {
                     b.HasOne("Vion.Domain.Entities.Categoria", "Categoria")
@@ -394,6 +618,10 @@ namespace Vion.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("Vion.Domain.Entities.Cupom", "Cupom")
+                        .WithMany("Produtos")
+                        .HasForeignKey("CupomId");
+
                     b.HasOne("Vion.Domain.Entities.Tamanho", "Tamanho")
                         .WithMany("Produtos")
                         .HasForeignKey("TamanhoId")
@@ -401,6 +629,8 @@ namespace Vion.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Categoria");
+
+                    b.Navigation("Cupom");
 
                     b.Navigation("Tamanho");
                 });
@@ -419,6 +649,16 @@ namespace Vion.Infrastructure.Migrations
             modelBuilder.Entity("Vion.Domain.Entities.Categoria", b =>
                 {
                     b.Navigation("Produtos");
+                });
+
+            modelBuilder.Entity("Vion.Domain.Entities.Cupom", b =>
+                {
+                    b.Navigation("Produtos");
+                });
+
+            modelBuilder.Entity("Vion.Domain.Entities.Pedido", b =>
+                {
+                    b.Navigation("Itens");
                 });
 
             modelBuilder.Entity("Vion.Domain.Entities.Tamanho", b =>
