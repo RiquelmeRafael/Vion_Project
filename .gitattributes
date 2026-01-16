@@ -4,5 +4,5 @@ Vion.Web/wwwroot/css/** linguist-vendored
 Vion.Web/wwwroot/js/** linguist-vendored
 Vion.Web/wwwroot/images/** linguist-vendored
 
-# Treat Razor files as C# (optional, but helps if they are counted as HTML)
-# *.cshtml linguist-language=C#
+# Treat Razor files as C# (to boost C# stats)
+*.cshtml linguist-language=C#
