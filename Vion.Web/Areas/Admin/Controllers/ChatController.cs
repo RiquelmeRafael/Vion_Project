@@ -76,6 +76,43 @@ namespace Vion.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
+        public async Task<IActionResult> ResponderAjax(int conversationId, string conteudo)
+        {
+            if (string.IsNullOrWhiteSpace(conteudo))
+            {
+                return BadRequest();
+            }
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Challenge();
+
+            var conversation = await _context.ChatConversations.FirstOrDefaultAsync(c => c.Id == conversationId);
+            if (conversation == null) return NotFound();
+
+            conversation.AtendenteId = user.Id;
+
+            var mensagem = new ChatMessage
+            {
+                ConversationId = conversation.Id,
+                RemetenteId = user.Id,
+                Conteudo = conteudo.Trim(),
+                RemetenteEhStaff = true,
+                EnviadoEm = DateTime.Now
+            };
+
+            _context.ChatMessages.Add(mensagem);
+            await _context.SaveChangesAsync();
+
+            return Json(new
+            {
+                id = mensagem.Id,
+                conteudo = mensagem.Conteudo,
+                remetenteEhStaff = mensagem.RemetenteEhStaff,
+                hora = mensagem.EnviadoEm.ToLocalTime().ToString("HH:mm")
+            });
+        }
+
+        [HttpPost]
         public async Task<IActionResult> Encerrar(int id)
         {
             var conversation = await _context.ChatConversations.FindAsync(id);
@@ -86,6 +123,30 @@ namespace Vion.Web.Areas.Admin.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+
+        [HttpGet]
+        public async Task<IActionResult> ObterMensagens(int conversationId, int lastMessageId)
+        {
+            var conversation = await _context.ChatConversations
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.Id == conversationId);
+
+            if (conversation == null) return NotFound();
+
+            var mensagens = await _context.ChatMessages
+                .AsNoTracking()
+                .Where(m => m.ConversationId == conversationId && m.Id > lastMessageId)
+                .OrderBy(m => m.EnviadoEm)
+                .Select(m => new
+                {
+                    id = m.Id,
+                    conteudo = m.Conteudo,
+                    remetenteEhStaff = m.RemetenteEhStaff,
+                    hora = m.EnviadoEm.ToLocalTime().ToString("HH:mm")
+                })
+                .ToListAsync();
+
+            return Json(new { mensagens });
+        }
     }
 }
-

@@ -49,16 +49,11 @@
         margin-bottom: 1.75rem;
         position: relative;
     }
-    .success-icon-wrapper i {
-        color: #2b1b09;
-    }
-    .success-icon-bag {
-        position: absolute;
-        right: -6px;
-        bottom: 4px;
-        font-size: 1.3rem;
-        color: #ffd98a;
-        text-shadow: 0 0 10px rgba(255, 217, 138, 0.8);
+    .success-icon-wrapper img {
+        width: 82px;
+        height: 82px;
+        border-radius: 50%;
+        object-fit: cover;
     }
     .success-title {
         font-size: 2.5rem;
@@ -186,8 +181,7 @@
         <div class="success-glow"></div>
         <div class="success-inner">
             <div class="success-icon-wrapper">
-                <i class="fas fa-check fa-2x"></i>
-                <i class="fas fa-shopping-bag success-icon-bag"></i>
+                <img src="~/images/sucessoPedido.png" alt="Pedido confirmado com sucesso">
             </div>
 
             <div class="success-order-id">

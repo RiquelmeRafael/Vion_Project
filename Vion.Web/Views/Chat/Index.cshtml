@@ -102,12 +102,12 @@
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-md-8 col-lg-6">
-            <div class="chat-card">
-                <!-- Header -->
-                <div class="chat-header d-flex align-items-center gap-3">
-                    <div class="rounded-circle bg-white bg-opacity-25 p-2 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
-                        <i class="bi bi-headset fs-4 text-white"></i>
-                    </div>
+                <div class="chat-card">
+                    <!-- Header -->
+                    <div class="chat-header d-flex align-items-center gap-3">
+                        <div class="rounded-circle overflow-hidden d-flex align-items-center justify-content-center" style="width: 48px; height: 48px; background-color: rgba(15,23,42,0.4);">
+                            <img src="~/images/Atendimento.png" alt="Atendimento Vion" class="img-fluid">
+                        </div>
                     <div>
                         <h5 class="mb-0 fw-bold">Suporte Vion</h5>
                         <small class="text-white-50">Estamos online para ajudar</small>
@@ -116,29 +116,26 @@
 
                 <!-- Messages Area -->
                 <div class="chat-messages" id="messagesArea">
+                    <div class="message-bubble message-other">
+                        O que podemos te ajudar hoje?
+                    </div>
+
                     @if (Model != null && Model.Mensagens != null && Model.Mensagens.Any())
                     {
                         foreach (var msg in Model.Mensagens.OrderBy(m => m.EnviadoEm))
                         {
                             var isMine = !msg.RemetenteEhStaff;
-                            <div class="message-bubble @(isMine ? "message-mine" : "message-other")">
+                            <div class="message-bubble @(isMine ? "message-mine" : "message-other")" data-message-id="@msg.Id">
                                 @msg.Conteudo
                                 <span class="message-time">@msg.EnviadoEm.ToString("HH:mm")</span>
                             </div>
                         }
                     }
-                    else
-                    {
-                        <div class="text-center text-muted my-auto">
-                            <i class="bi bi-chat-dots fs-1 mb-2 d-block opacity-25"></i>
-                            <p>Olá! Como podemos ajudar você hoje?</p>
-                        </div>
-                    }
                 </div>
 
                 <!-- Input Area -->
                 <div class="chat-input-area">
-                    <form asp-action="EnviarMensagem" method="post" class="d-flex align-items-center gap-2">
+                    <form asp-action="EnviarMensagem" method="post" class="d-flex align-items-center gap-2" data-chat-cliente="true">
                         <div class="flex-grow-1">
                             <input type="text" name="conteudo" class="form-control form-control-lg border-0 bg-light" 
                                    placeholder="Digite sua mensagem..." required autocomplete="off" style="border-radius: 24px; padding-left: 20px;">
@@ -153,8 +150,62 @@
     </div>
 </div>
 
-<script>
-    // Rolar para o fim automaticamente
-    var msgArea = document.getElementById('messagesArea');
-    msgArea.scrollTop = msgArea.scrollHeight;
-</script>
+@section Scripts {
+    <script>
+        $(function () {
+            var messagesArea = $('#messagesArea');
+            var conversationId = @(Model?.Id ?? 0);
+            var lastMessageId = parseInt(messagesArea.find('.message-bubble').last().data('message-id')) || 0;
+
+            function scrollToBottom() {
+                var el = messagesArea[0];
+                if (el) {
+                    el.scrollTop = el.scrollHeight;
+                }
+            }
+
+            function appendMessage(m, isMine) {
+                var bubble = $('<div>')
+                    .addClass('message-bubble')
+                    .addClass(isMine ? 'message-mine' : 'message-other')
+                    .attr('data-message-id', m.id);
+                bubble.append(document.createTextNode(m.conteudo));
+                var timeSpan = $('<span>')
+                    .addClass('message-time')
+                    .text(m.hora);
+                bubble.append(timeSpan);
+                messagesArea.append(bubble);
+                lastMessageId = m.id;
+                scrollToBottom();
+            }
+
+            function carregarNovasMensagens() {
+                $.getJSON('@Url.Action("ObterMensagens")', { conversationId: conversationId, lastMessageId: lastMessageId })
+                    .done(function (resp) {
+                        if (!resp || !resp.mensagens) return;
+                        for (var i = 0; i < resp.mensagens.length; i++) {
+                            var m = resp.mensagens[i];
+                            appendMessage(m, !m.remetenteEhStaff);
+                        }
+                    });
+            }
+
+            setInterval(carregarNovasMensagens, 3000);
+
+            var form = $('form[data-chat-cliente="true"]');
+            form.on('submit', function (e) {
+                e.preventDefault();
+                var input = form.find('input[name="conteudo"]');
+                var texto = input.val();
+                if (!texto || !texto.trim()) return;
+                $.post('@Url.Action("EnviarMensagemAjax")', { conversationId: conversationId, conteudo: texto })
+                    .done(function (m) {
+                        appendMessage(m, true);
+                        input.val('');
+                    });
+            });
+
+            scrollToBottom();
+        });
+    </script>
+}

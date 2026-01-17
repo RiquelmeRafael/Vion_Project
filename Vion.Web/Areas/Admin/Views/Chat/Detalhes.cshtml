@@ -147,8 +147,8 @@
                             // RemetenteEhStaff = true -> É mensagem MINHA (Staff) -> message-mine
                             // RemetenteEhStaff = false -> É mensagem DO CLIENTE (Other) -> message-other
                             var isMine = msg.RemetenteEhStaff;
-                            
-                            <div class="message-bubble @(isMine ? "message-mine" : "message-other")">
+
+                            <div class="message-bubble @(isMine ? "message-mine" : "message-other")" data-message-id="@msg.Id">
                                 @msg.Conteudo
                                 <span class="message-time">@msg.EnviadoEm.ToString("HH:mm")</span>
                             </div>
@@ -166,7 +166,7 @@
                 @if (!Model.Encerrado)
                 {
                     <div class="chat-input-area">
-                        <form asp-action="Responder" method="post" class="d-flex align-items-center gap-2">
+                        <form asp-action="Responder" method="post" class="d-flex align-items-center gap-2" data-chat-admin="true">
                             <input type="hidden" name="conversationId" value="@Model.Id" />
                             <div class="flex-grow-1">
                                 <input type="text" name="conteudo" class="form-control form-control-lg border-0 bg-light" 
@@ -189,9 +189,64 @@
     </div>
 </div>
 
-<script>
-    var msgArea = document.getElementById('messagesArea');
-    if(msgArea) {
-        msgArea.scrollTop = msgArea.scrollHeight;
-    }
-</script>
+@section Scripts {
+    <script>
+        $(function () {
+            var messagesArea = $('#messagesArea');
+            var conversationId = @Model.Id;
+            var lastMessageId = parseInt(messagesArea.find('.message-bubble').last().data('message-id')) || 0;
+
+            function scrollToBottom() {
+                var el = messagesArea[0];
+                if (el) {
+                    el.scrollTop = el.scrollHeight;
+                }
+            }
+
+            function appendMessage(m, isMine) {
+                var bubble = $('<div>')
+                    .addClass('message-bubble')
+                    .addClass(isMine ? 'message-mine' : 'message-other')
+                    .attr('data-message-id', m.id);
+                bubble.append(document.createTextNode(m.conteudo));
+                var timeSpan = $('<span>')
+                    .addClass('message-time')
+                    .text(m.hora);
+                bubble.append(timeSpan);
+                messagesArea.append(bubble);
+                lastMessageId = m.id;
+                scrollToBottom();
+            }
+
+            function carregarNovasMensagens() {
+                $.getJSON('@Url.Action("ObterMensagens")', { conversationId: conversationId, lastMessageId: lastMessageId })
+                    .done(function (resp) {
+                        if (!resp || !resp.mensagens) return;
+                        for (var i = 0; i < resp.mensagens.length; i++) {
+                            var m = resp.mensagens[i];
+                            appendMessage(m, m.remetenteEhStaff);
+                        }
+                    });
+            }
+
+            setInterval(carregarNovasMensagens, 3000);
+
+            var form = $('form[data-chat-admin="true"]');
+            if (form.length) {
+                form.on('submit', function (e) {
+                    e.preventDefault();
+                    var input = form.find('input[name="conteudo"]');
+                    var texto = input.val();
+                    if (!texto || !texto.trim()) return;
+                    $.post('@Url.Action("ResponderAjax")', { conversationId: conversationId, conteudo: texto })
+                        .done(function (m) {
+                            appendMessage(m, m.remetenteEhStaff);
+                            input.val('');
+                        });
+                });
+            }
+
+            scrollToBottom();
+        });
+    </script>
+}
