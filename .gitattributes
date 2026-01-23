@@ -1,9 +1,12 @@
 # Ignore external libraries
 Vion.Web/wwwroot/lib/** linguist-vendored
 
-# Force Razor Views to be counted as C# to reflect backend nature
-*.cshtml linguist-language=C#
-
-# Keep custom assets visible (but they will be smaller in proportion now)
+# Ensure CSS and JS are visible
 Vion.Web/wwwroot/css/** linguist-detectable=true
 Vion.Web/wwwroot/js/** linguist-detectable=true
+
+# Ensure Migrations are counted as C# code (not ignored as generated) to boost C# stats
+Vion.Infrastructure/Migrations/** linguist-generated=false linguist-language=C#
+
+# Allow Views to be detected naturally (mostly HTML) to appear in stats
+*.cshtml linguist-detectable=true
