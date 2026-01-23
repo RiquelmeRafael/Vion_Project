@@ -1,12 +1,13 @@
-# Ignore external libraries
+# Ignore external libraries (Bootstrap, jQuery, etc.)
 Vion.Web/wwwroot/lib/** linguist-vendored
 
-# Ensure CSS and JS are visible
+# Ensure CSS and JS are visible in stats
 Vion.Web/wwwroot/css/** linguist-detectable=true
 Vion.Web/wwwroot/js/** linguist-detectable=true
 
-# Ensure Migrations are counted as C# code (not ignored as generated) to boost C# stats
-Vion.Infrastructure/Migrations/** linguist-generated=false linguist-language=C#
+# EXCLUDE Migrations from stats to prevent C# from reaching 99%
+# This allows HTML, CSS, and JS to have a larger percentage share
+Vion.Infrastructure/Migrations/** linguist-generated=true
 
-# Allow Views to be detected naturally (mostly HTML) to appear in stats
-*.cshtml linguist-detectable=true
+# Treat Razor Views as HTML to boost the HTML statistic
+*.cshtml linguist-language=HTML
