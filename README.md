@@ -6,7 +6,8 @@
 
 ### 🎥 Demonstração
 
-![Demonstração Vion Store](https://placehold.co/800x400?text=Substitua+por+seu+GIF+aqui)
+https://github.com/user-attachments/assets/d29e2912-fad3-4e59-bd63-c8bc1bc7d7a5
+
 <!-- DICA: Para ter o efeito de LOOP automático, você DEVE usar um arquivo .GIF. Vídeos MP4 não rodam em loop no GitHub. -->
 
 ---
@@ -99,4 +100,23 @@ O projeto utiliza o **Entity Framework Core** com a abordagem **Code-First**. As
 
 ## 📸 Fotos da Aplicação
 
-[Insira aqui as capturas de tela (screenshots) das principais telas do sistema]
+<h2>Home</h2>
+<img width="1888" height="903" alt="home" src="https://github.com/user-attachments/assets/b747006c-5fd4-4633-b3fc-60c95841716e" />
+
+<h2>Catálogo </h2>
+<img width="1908" height="912" alt="catalogo" src="https://github.com/user-attachments/assets/7e2aa851-89ee-44b6-93bf-1388a0950810" />
+
+<h2>Produtos</h2>
+<img width="1912" height="912" alt="produtos" src="https://github.com/user-attachments/assets/24a1b412-5b6d-42a2-b65c-3a3a183049c9" />
+
+<h2>Gerenciamento</h2>
+<img width="1907" height="907" alt="gerenciamento" src="https://github.com/user-attachments/assets/3f4515a7-8394-4033-ac0a-18de0ea828ba" />
+
+<h2>Carrinho</h2>
+<img width="1886" height="912" alt="carrinho" src="https://github.com/user-attachments/assets/4b60b627-268f-42db-bcb7-b3fbbef4d6c5" />
+
+<h2>Checkout</h2>
+<img width="1887" height="907" alt="checkout" src="https://github.com/user-attachments/assets/bd95e46f-0875-438f-ab78-9143ac2de0fd" />
+
+
+
