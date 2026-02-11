@@ -41,11 +41,14 @@
                         </a>
                     </li>
 
-                    <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center gap-1 text-white" asp-area="" asp-controller="Checkout" asp-action="MeusPedidos">
-                            Meus Pedidos
-                        </a>
-                    </li>
+                    @if (User.Identity != null && User.Identity.IsAuthenticated)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link d-flex align-items-center gap-1 text-white" asp-area="" asp-controller="Checkout" asp-action="MeusPedidos">
+                                Meus Pedidos
+                            </a>
+                        </li>
+                    }
 
                     <li class="nav-item">
                         <a class="nav-link d-flex align-items-center gap-1 text-white" asp-area="" asp-controller="Home" asp-action="About">
@@ -165,10 +168,10 @@
                 <div class="col-md-3 mb-4">
                     <h6 class="text-uppercase fw-bold mb-3 text-white">Encontre</h6>
                     <ul class="list-unstyled d-flex flex-column gap-2">
-                        <li><a asp-controller="Home" asp-action="Index" class="text-white-50 text-decoration-none small">Home</a></li>
-                        <li><a asp-controller="Home" asp-action="Catalog" class="text-white-50 text-decoration-none small">Produtos</a></li>
-                        <li><a asp-controller="Checkout" asp-action="MeusPedidos" class="text-white-50 text-decoration-none small">Meus Pedidos</a></li>
-                        <li><a asp-controller="Carrinho" asp-action="Index" class="text-white-50 text-decoration-none small">Carrinho</a></li>
+                        <li><a asp-area="" asp-controller="Home" asp-action="Index" class="text-white-50 text-decoration-none small">Home</a></li>
+                        <li><a asp-area="" asp-controller="Home" asp-action="Catalog" class="text-white-50 text-decoration-none small">Produtos</a></li>
+                        <li><a asp-area="" asp-controller="Checkout" asp-action="MeusPedidos" class="text-white-50 text-decoration-none small">Meus Pedidos</a></li>
+                        <li><a asp-area="" asp-controller="Carrinho" asp-action="Index" class="text-white-50 text-decoration-none small">Carrinho</a></li>
                     </ul>
                 </div>
 
@@ -178,9 +181,9 @@
                     <ul class="list-unstyled d-flex flex-column gap-2">
                         @if (User.Identity != null && User.Identity.IsAuthenticated && !User.IsInRole("Admin") && !User.IsInRole("Gerente"))
                         {
-                            <li><a asp-controller="Chat" asp-action="Index" class="text-white-50 text-decoration-none small">Suporte</a></li>
+                            <li><a asp-area="" asp-controller="Chat" asp-action="Index" class="text-white-50 text-decoration-none small">Suporte</a></li>
                         }
-                        <li><a asp-controller="Home" asp-action="About" class="text-white-50 text-decoration-none small">Sobre</a></li>
+                        <li><a asp-area="" asp-controller="Home" asp-action="About" class="text-white-50 text-decoration-none small">Sobre</a></li>
                         <li><a href="#" class="text-white-50 text-decoration-none small">Termos de Uso</a></li>
                         <li><a href="#" class="text-white-50 text-decoration-none small">Política de Privacidade</a></li>
                     </ul>
@@ -190,7 +193,7 @@
                 <div class="col-md-3 mb-4">
                     <h6 class="text-uppercase fw-bold mb-3 text-white">Sobre a Vion</h6>
                     <ul class="list-unstyled d-flex flex-column gap-2">
-                        <li><a asp-controller="Home" asp-action="About" class="text-white-50 text-decoration-none small">Propósito</a></li>
+                        <li><a asp-area="" asp-controller="Home" asp-action="About" class="text-white-50 text-decoration-none small">Propósito</a></li>
                         <li><a href="#" class="text-white-50 text-decoration-none small">Sustentabilidade</a></li>
                         <li><a href="#" class="text-white-50 text-decoration-none small">Carreiras</a></li>
                     </ul>

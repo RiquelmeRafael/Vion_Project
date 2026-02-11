@@ -98,6 +98,7 @@ namespace Vion.Web.Controllers
             // Clear validation for the other part
             ModelState.Remove("Dados.Nome");
             ModelState.Remove("Dados.Email");
+            ModelState.Remove("Dados.Telefone");
 
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return RedirectToAction("Login", "Auth");

@@ -6,7 +6,8 @@
 
 ### 🎥 Demonstração
 
-[Insira aqui o vídeo ou GIF de demonstração do projeto]
+![Demonstração Vion Store](https://placehold.co/800x400?text=Substitua+por+seu+GIF+aqui)
+<!-- DICA: Para ter o efeito de LOOP automático, você DEVE usar um arquivo .GIF. Vídeos MP4 não rodam em loop no GitHub. -->
 
 ---
 
