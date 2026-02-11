@@ -1,24 +1,28 @@
 # Auto-detect text files and perform LF normalization
 * text=auto
 
-# Force C# detection (already default, but being explicit)
+# Force C# detection
 *.cs linguist-detectable=true
 
 # Force HTML/Razor detection
 *.cshtml linguist-detectable=true linguist-language=HTML
 *.html linguist-detectable=true
 
-# Force CSS and JavaScript detection
+# Force CSS and JavaScript detection for YOUR code
 *.css linguist-detectable=true
 *.js linguist-detectable=true
 
-# Allow libraries in wwwroot to count towards statistics
-# This ensures CSS and JS show up in the GitHub language bar
-Vion.Web/wwwroot/lib/** linguist-vendored=false
-Vion.Web/wwwroot/lib/**/*.css linguist-detectable=true
-Vion.Web/wwwroot/lib/**/*.js linguist-detectable=true
+# EXCLUDE external libraries (Bootstrap, jQuery) from statistics
+# This prevents them from overtaking C# in the language bar
+Vion.Web/wwwroot/lib/** linguist-vendored
+Vion.Web/wwwroot/lib/**/*.css linguist-vendored
+Vion.Web/wwwroot/lib/**/*.js linguist-vendored
 
-# Ignore build artifacts from stats (just in case)
+# Ensure your custom scripts and styles are counted
+Vion.Web/wwwroot/js/** linguist-detectable=true
+Vion.Web/wwwroot/css/** linguist-detectable=true
+
+# Ignore build artifacts
 bin/ linguist-vendored
 obj/ linguist-vendored
 .vs/ linguist-vendored
