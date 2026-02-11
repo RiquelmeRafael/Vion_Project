@@ -4,9 +4,10 @@
 
 ---
 
-### 🎥 Demonstração
+### 🎥 Video do Site
+![videoVion](https://github.com/user-attachments/assets/141f8d55-c4e9-48e8-93f7-6c391d37b7cd)
 
-https://github.com/user-attachments/assets/d29e2912-fad3-4e59-bd63-c8bc1bc7d7a5
+
 
 
 
@@ -117,6 +118,10 @@ O projeto utiliza o **Entity Framework Core** com a abordagem **Code-First**. As
 
 <h2>Checkout</h2>
 <img width="1887" height="907" alt="checkout" src="https://github.com/user-attachments/assets/bd95e46f-0875-438f-ab78-9143ac2de0fd" />
+
+
+
+
 
 
 
