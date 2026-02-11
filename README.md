@@ -8,7 +8,7 @@
 
 https://github.com/user-attachments/assets/d29e2912-fad3-4e59-bd63-c8bc1bc7d7a5
 
-<!-- DICA: Para ter o efeito de LOOP automático, você DEVE usar um arquivo .GIF. Vídeos MP4 não rodam em loop no GitHub. -->
+
 
 ---
 
