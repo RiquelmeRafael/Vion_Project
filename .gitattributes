@@ -1,8 +1,24 @@
-# Ignore library files and static assets from language stats
-Vion.Web/wwwroot/lib/** linguist-vendored
-Vion.Web/wwwroot/css/** linguist-vendored
-Vion.Web/wwwroot/js/** linguist-vendored
-Vion.Web/wwwroot/images/** linguist-vendored
+# Auto-detect text files and perform LF normalization
+* text=auto
 
-# Treat Razor files as C# (to boost C# stats)
-*.cshtml linguist-language=C#
+# Force C# detection (already default, but being explicit)
+*.cs linguist-detectable=true
+
+# Force HTML/Razor detection
+*.cshtml linguist-detectable=true linguist-language=HTML
+*.html linguist-detectable=true
+
+# Force CSS and JavaScript detection
+*.css linguist-detectable=true
+*.js linguist-detectable=true
+
+# Allow libraries in wwwroot to count towards statistics
+# This ensures CSS and JS show up in the GitHub language bar
+Vion.Web/wwwroot/lib/** linguist-vendored=false
+Vion.Web/wwwroot/lib/**/*.css linguist-detectable=true
+Vion.Web/wwwroot/lib/**/*.js linguist-detectable=true
+
+# Ignore build artifacts from stats (just in case)
+bin/ linguist-vendored
+obj/ linguist-vendored
+.vs/ linguist-vendored
