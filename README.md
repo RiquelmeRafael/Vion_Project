@@ -117,7 +117,7 @@ O projeto utiliza o **Entity Framework Core** com a abordagem **Code-First**. As
 <h2>Carrinho</h2>
 <img width="1886" height="912" alt="carrinho" src="https://github.com/user-attachments/assets/4b60b627-268f-42db-bcb7-b3fbbef4d6c5" />
 
-<h2>Check-out </h2>
+<h2>Checkout</h2>
 <img width="1887" height="907" alt="checkout" src="https://github.com/user-attachments/assets/bd95e46f-0875-438f-ab78-9143ac2de0fd" />
 
 
