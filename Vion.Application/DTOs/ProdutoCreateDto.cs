@@ -13,4 +13,5 @@ public class ProdutoCreateDto
     public string? ImagemUrl2 { get; set; }
     public string? ImagemUrl3 { get; set; }
     public string? ImagemUrl4 { get; set; }
+    public int? CupomId { get; set; }
 }

@@ -46,10 +46,11 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services
     .AddIdentity<Usuario, IdentityRole<int>>(options =>
     {
-        options.Password.RequireDigit = false;
+        options.Password.RequireDigit = true;
+        options.Password.RequireLowercase = true;
         options.Password.RequireUppercase = false;
         options.Password.RequireNonAlphanumeric = false;
-        options.Password.RequiredLength = 4; // Facilita testes
+        options.Password.RequiredLength = 6;
     })
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
@@ -134,7 +135,19 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
     var context = services.GetRequiredService<AppDbContext>();
 
-    await DbSeeder.SeedAsync(context, services);
+    try
+    {
+        // Aplica migrações pendentes e cria o banco se não existir
+        await context.Database.MigrateAsync();
+        
+        await DbSeeder.SeedAsync(context, services);
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "Ocorreu um erro ao inicializar o banco de dados (Migration/Seed). Verifique a ConnectionString e se o SQL Server está rodando.");
+        throw;
+    }
 }
 
 // =======================

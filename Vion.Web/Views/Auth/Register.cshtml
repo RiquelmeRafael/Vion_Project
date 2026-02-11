@@ -29,17 +29,27 @@
                 <span asp-validation-for="Email" class="text-danger small"></span>
             </div>
 
-            <div class="form-floating mb-3">
-                <input asp-for="Senha" class="form-control rounded-3" placeholder="Senha" />
-                <label asp-for="Senha" class="text-muted">Senha</label>
-                <span asp-validation-for="Senha" class="text-danger small"></span>
+            <div class="input-group mb-3">
+                <div class="form-floating flex-grow-1">
+                    <input asp-for="Senha" type="password" class="form-control rounded-start-3" id="inputSenha" placeholder="Senha" style="border-right: none;" />
+                    <label asp-for="Senha" class="text-muted">Senha</label>
+                </div>
+                <span class="input-group-text bg-white border-start-0 rounded-end-3" style="cursor: pointer;" onclick="togglePassword('inputSenha', 'iconSenha')">
+                    <i class="bi bi-eye" id="iconSenha"></i>
+                </span>
             </div>
+            <div class="mb-3"><span asp-validation-for="Senha" class="text-danger small"></span></div>
 
-            <div class="form-floating mb-4">
-                <input asp-for="ConfirmarSenha" class="form-control rounded-3" placeholder="Confirmar Senha" />
-                <label asp-for="ConfirmarSenha" class="text-muted">Confirmar Senha</label>
-                <span asp-validation-for="ConfirmarSenha" class="text-danger small"></span>
+            <div class="input-group mb-4">
+                <div class="form-floating flex-grow-1">
+                    <input asp-for="ConfirmarSenha" type="password" class="form-control rounded-start-3" id="inputConfirmarSenha" placeholder="Confirmar Senha" style="border-right: none;" />
+                    <label asp-for="ConfirmarSenha" class="text-muted">Confirmar Senha</label>
+                </div>
+                <span class="input-group-text bg-white border-start-0 rounded-end-3" style="cursor: pointer;" onclick="togglePassword('inputConfirmarSenha', 'iconConfirmarSenha')">
+                    <i class="bi bi-eye" id="iconConfirmarSenha"></i>
+                </span>
             </div>
+            <div class="mb-4"><span asp-validation-for="ConfirmarSenha" class="text-danger small"></span></div>
 
             <div class="mb-4 text-muted small text-center">
                 Ao criar uma conta, você concorda com a <a href="#" class="text-decoration-underline text-dark">Política de Privacidade</a> e os <a href="#" class="text-decoration-underline text-dark">Termos de Uso</a> da Vion.
@@ -59,4 +69,20 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        function togglePassword(inputId, iconId) {
+            var input = document.getElementById(inputId);
+            var icon = document.getElementById(iconId);
+            
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove("bi-eye");
+                icon.classList.add("bi-eye-slash");
+            } else {
+                input.type = "password";
+                icon.classList.remove("bi-eye-slash");
+                icon.classList.add("bi-eye");
+            }
+        }
+    </script>
 }

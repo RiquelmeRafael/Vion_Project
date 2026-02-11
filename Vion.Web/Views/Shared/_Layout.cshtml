@@ -1,5 +1,10 @@
 @using Vion.Web.Extensions
 @using Vion.Web.Models.ViewModels
+@using Microsoft.AspNetCore.Identity
+@using Vion.Domain.Entities
+@using Vion.Infrastructure.Persistence
+@inject AppDbContext _context
+@inject UserManager<Usuario> _userManager
 
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -31,7 +36,7 @@
 
                     <li class="nav-item">
                         <a class="nav-link d-flex align-items-center gap-1 text-white" asp-area="" asp-controller="Home" asp-action="Index">
-                            Home
+                            Início
                         </a>
                     </li>
 
@@ -41,14 +46,11 @@
                         </a>
                     </li>
 
-                    @if (User.Identity != null && User.Identity.IsAuthenticated)
-                    {
-                        <li class="nav-item">
-                            <a class="nav-link d-flex align-items-center gap-1 text-white" asp-area="" asp-controller="Checkout" asp-action="MeusPedidos">
-                                Meus Pedidos
-                            </a>
-                        </li>
-                    }
+                    <li class="nav-item">
+                        <a class="nav-link d-flex align-items-center gap-1 text-white" asp-area="" asp-controller="Checkout" asp-action="MeusPedidos">
+                            Meus Pedidos
+                        </a>
+                    </li>
 
                     <li class="nav-item">
                         <a class="nav-link d-flex align-items-center gap-1 text-white" asp-area="" asp-controller="Home" asp-action="About">
@@ -74,15 +76,26 @@
                     </li>
 
                     @{
-                        var carrinho = Context.Session.Get<CarrinhoViewModel>("Carrinho");
-                        var qtdItens = carrinho?.Itens.Sum(i => i.Quantidade) ?? 0;
-                        var isAuthenticated = User.Identity != null && User.Identity.IsAuthenticated;
+                        var qtdItens = 0;
+                        if (User.Identity != null && User.Identity.IsAuthenticated)
+                        {
+                            var userIdStr = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                            if (int.TryParse(userIdStr, out int userId))
+                            {
+                                qtdItens = _context.CarrinhoItens.Where(c => c.UsuarioId == userId).Sum(c => c.Quantidade);
+                            }
+                        }
+                        else
+                        {
+                            var carrinho = Context.Session.Get<CarrinhoViewModel>("Carrinho");
+                            qtdItens = carrinho?.Itens.Sum(i => i.Quantidade) ?? 0;
+                        }
                     }
                     <li class="nav-item position-relative">
                         <a class="nav-link d-flex align-items-center gap-1 text-white" asp-area="" asp-controller="Carrinho" asp-action="Index">
                             <i class="bi bi-cart3 fs-5"></i>
                             Carrinho
-                            @if (isAuthenticated && qtdItens > 0)
+                            @if (qtdItens > 0)
                             {
                                 <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem;">
                                     @qtdItens
@@ -117,7 +130,7 @@
                             <ul class="dropdown-menu dropdown-menu-end">
                                 <li><span class="dropdown-item-text text-muted small">Olá, @User.Identity.Name</span></li>
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" asp-controller="Perfil" asp-action="Index">Minha Conta</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Perfil" asp-action="Index">Minha Conta</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
                                     <form asp-area="" asp-controller="Auth" asp-action="Logout" method="post" class="d-inline">

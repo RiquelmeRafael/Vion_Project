@@ -29,11 +29,18 @@ namespace Vion.Web.Controllers
                 .ThenInclude(m => m.Remetente)
                 .FirstOrDefaultAsync(c => c.ClienteId == user.Id && !c.Encerrado);
 
-            // Se não houver conversa ativa, retornamos null ou um modelo vazio para a View.
-            // A View deve tratar o caso de Model ser null ou Id == 0.
-            
-            // Garante que a lista de mensagens não seja nula para a View, se conversa existir
-            if (conversation != null && conversation.Mensagens == null)
+            if (conversation == null)
+            {
+                conversation = new ChatConversation
+                {
+                    ClienteId = user.Id
+                };
+                _context.ChatConversations.Add(conversation);
+                await _context.SaveChangesAsync();
+            }
+
+            // Garante que a lista de mensagens não seja nula para a View
+            if (conversation.Mensagens == null)
             {
                 conversation.Mensagens = new List<ChatMessage>();
             }
@@ -98,20 +105,12 @@ namespace Vion.Web.Controllers
 
             if (conversation == null)
             {
-                // Se não achou pelo ID (ou ID é 0), tenta buscar qualquer conversa ativa do usuário
-                conversation = await _context.ChatConversations
-                    .FirstOrDefaultAsync(c => c.ClienteId == user.Id && !c.Encerrado);
-
-                // Se ainda assim não existir, cria uma nova
-                if (conversation == null)
+                conversation = new ChatConversation
                 {
-                    conversation = new ChatConversation
-                    {
-                        ClienteId = user.Id
-                    };
-                    _context.ChatConversations.Add(conversation);
-                    await _context.SaveChangesAsync();
-                }
+                    ClienteId = user.Id
+                };
+                _context.ChatConversations.Add(conversation);
+                await _context.SaveChangesAsync();
             }
 
             var mensagem = new ChatMessage

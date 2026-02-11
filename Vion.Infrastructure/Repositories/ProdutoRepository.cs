@@ -87,6 +87,22 @@ public class ProdutoRepository : IProdutoRepository
         _context.Produtos.Remove(produto);
     }
 
+    public async Task UpdateImagesForVariantsAsync(string nome, string cor, int categoriaId, string? img1, string? img2, string? img3, string? img4)
+    {
+        var variants = await _context.Produtos
+            .Where(p => p.Nome == nome && p.Cor == cor && p.CategoriaId == categoriaId)
+            .ToListAsync();
+
+        foreach (var p in variants)
+        {
+            p.ImagemUrl = img1 ?? "";
+            p.ImagemUrl2 = img2;
+            p.ImagemUrl3 = img3;
+            p.ImagemUrl4 = img4;
+            // No need to call Update(), ChangeTracker handles it.
+        }
+    }
+
     public async Task<bool> SaveChangesAsync()
     {
         return await _context.SaveChangesAsync() > 0;

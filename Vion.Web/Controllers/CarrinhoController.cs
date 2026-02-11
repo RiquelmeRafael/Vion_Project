@@ -76,6 +76,7 @@ namespace Vion.Web.Controllers
             return Json(resultado);
         }
 
+        // [Authorize] // Removido para permitir carrinho anônimo (Sessão)
         public async Task<IActionResult> Adicionar(int id, int quantidade = 1)
         {
             if (id <= 0)

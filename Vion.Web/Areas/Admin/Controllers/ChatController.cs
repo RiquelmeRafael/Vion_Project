@@ -24,6 +24,8 @@ namespace Vion.Web.Areas.Admin.Controllers
         {
             var conversas = await _context.ChatConversations
                 .Include(c => c.Cliente)
+                .Include(c => c.Mensagens)
+                .Where(c => c.Mensagens.Any())
                 .OrderByDescending(c => c.CriadoEm)
                 .ToListAsync();
 

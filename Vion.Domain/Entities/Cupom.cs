@@ -9,7 +9,7 @@ namespace Vion.Domain.Entities
 
         [Required]
         [MaxLength(20)]
-        public string Codigo { get; set; }
+        public string Codigo { get; set; } = null!;
 
         [Column(TypeName = "decimal(5,2)")]
         public decimal PercentualDesconto { get; set; } // Ex: 10.00 para 10%

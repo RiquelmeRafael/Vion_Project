@@ -31,8 +31,8 @@ public class ProdutosController : ControllerBase
             p.Nome,
             p.Descricao,
             p.Preco,
-            Categoria = p.Categoria.Nome,
-            Tamanho = p.Tamanho.Nome,
+            Categoria = p.Categoria?.Nome,
+            Tamanho = p.Tamanho?.Nome,
             p.Estoque,
             p.ImagemUrl,
             p.ImagemUrl2,
@@ -62,8 +62,10 @@ public class ProdutosController : ControllerBase
             produto.Nome,
             produto.Descricao,
             produto.Preco,
-            Categoria = produto.Categoria.Nome,
-            Tamanho = produto.Tamanho.Nome,
+            produto.CategoriaId,
+            Categoria = produto.Categoria?.Nome,
+            produto.TamanhoId,
+            Tamanho = produto.Tamanho?.Nome,
             produto.Cor,
             produto.Estoque,
             produto.ImagemUrl,
@@ -91,10 +93,11 @@ public class ProdutosController : ControllerBase
             TamanhoId = dto.TamanhoId,
             Cor = dto.Cor,
             Estoque = dto.Estoque,
-            ImagemUrl = dto.ImagemUrl,
-            ImagemUrl2 = dto.ImagemUrl2,
-            ImagemUrl3 = dto.ImagemUrl3,
-            ImagemUrl4 = dto.ImagemUrl4,
+            ImagemUrl = dto.ImagemUrl ?? string.Empty,
+            ImagemUrl2 = string.IsNullOrWhiteSpace(dto.ImagemUrl2) ? null : dto.ImagemUrl2,
+            ImagemUrl3 = string.IsNullOrWhiteSpace(dto.ImagemUrl3) ? null : dto.ImagemUrl3,
+            ImagemUrl4 = string.IsNullOrWhiteSpace(dto.ImagemUrl4) ? null : dto.ImagemUrl4,
+            CupomId = dto.CupomId,
             CreatedAt = DateTime.UtcNow
         };
 
@@ -119,10 +122,15 @@ public class ProdutosController : ControllerBase
         produto.Preco = dto.Preco;
         produto.Cor = dto.Cor;
         produto.Estoque = dto.Estoque;
-        produto.ImagemUrl = dto.ImagemUrl;
-        produto.ImagemUrl2 = dto.ImagemUrl2;
-        produto.ImagemUrl3 = dto.ImagemUrl3;
-        produto.ImagemUrl4 = dto.ImagemUrl4;
+        produto.ImagemUrl = dto.ImagemUrl ?? "";
+        produto.ImagemUrl2 = string.IsNullOrWhiteSpace(dto.ImagemUrl2) ? null : dto.ImagemUrl2;
+        produto.ImagemUrl3 = string.IsNullOrWhiteSpace(dto.ImagemUrl3) ? null : dto.ImagemUrl3;
+        produto.ImagemUrl4 = string.IsNullOrWhiteSpace(dto.ImagemUrl4) ? null : dto.ImagemUrl4;
+        
+        if (dto.CupomId.HasValue)
+            produto.CupomId = dto.CupomId;
+        else
+            produto.CupomId = null; // Permite remover o cupom
 
         // ?? PROTEO CONTRA FK INVLIDAINV�LIDA
         if (dto.CategoriaId > 0)
@@ -130,6 +138,17 @@ public class ProdutosController : ControllerBase
 
         if (dto.TamanhoId > 0)
             produto.TamanhoId = dto.TamanhoId;
+
+        // Atualizar imagens de todas as variantes (mesmo Nome, Cor e Categoria)
+        await _repository.UpdateImagesForVariantsAsync(
+            produto.Nome,
+            produto.Cor,
+            produto.CategoriaId,
+            produto.ImagemUrl,
+            produto.ImagemUrl2,
+            produto.ImagemUrl3,
+            produto.ImagemUrl4
+        );
 
         _repository.Update(produto);
         await _repository.SaveChangesAsync();

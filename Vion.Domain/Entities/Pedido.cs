@@ -8,7 +8,7 @@ namespace Vion.Domain.Entities
         public int Id { get; set; }
 
         public int UsuarioId { get; set; }
-        public Usuario Usuario { get; set; }
+        public Usuario Usuario { get; set; } = null!;
 
         public DateTime DataPedido { get; set; } = DateTime.UtcNow;
 
@@ -27,7 +27,7 @@ namespace Vion.Domain.Entities
 
         [Required]
         [MaxLength(50)]
-        public string FormaPagamento { get; set; } // Pix, CartaoCredito
+        public string FormaPagamento { get; set; } = null!; // Pix, CartaoCredito
         public decimal ValorFrete { get; set; }
 
         // Dados do Cliente no momento da compra

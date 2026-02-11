@@ -24,32 +24,11 @@
                         </a>
                     </h5>
 
-                    <div class="d-flex justify-content-between mb-3">
+                    <div class="mb-3">
                         <span class="text-muted small">
                             Tamanho: <strong>@produto.Tamanho</strong>
                         </span>
-                        <span class="text-warning small">
-                            Estoque: <strong>@produto.Estoque</strong>
-                        </span>
                     </div>
-
-                    @if (produto.ValorFreteFixo.HasValue)
-                    {
-                        <div class="mb-2">
-                            <span class="badge bg-info text-dark">
-                            Frete Fixo: @produto.ValorFreteFixo.Value.ToString("C")
-                        </span>
-                    </div>
-                }
-
-                @if (!string.IsNullOrEmpty(produto.CupomCodigo))
-                {
-                    <div class="mb-2">
-                        <span class="badge bg-danger text-white">
-                            Produto com desconto! Use o cupom: @produto.CupomCodigo
-                        </span>
-                    </div>
-                }
 
                 <p class="fs-4 fw-bold mb-3 text-dark">
                     R$ @produto.Preco.ToString("N2")

@@ -60,7 +60,7 @@ public class HomeController : Controller
             // Você pode definir manualmente as imagens de cada categoria aqui.
             // Basta colocar o nome da categoria e o link da imagem (pode ser URL ou caminho local).
             
-            string imagem;
+            string? imagem = null;
 
             if (cat.Nome.Equals("Tênis", StringComparison.OrdinalIgnoreCase))
             {
@@ -71,16 +71,10 @@ public class HomeController : Controller
                 // imagem = "https://exemplo.com/foto-tenis.jpg";
 
                 // Se deixar null ou comentar, ele vai tentar pegar a foto do primeiro produto automaticamente.
-                imagem = null; 
             }
             else if (cat.Nome.Equals("Roupas", StringComparison.OrdinalIgnoreCase))
             {
                 // imagem = "/images/categories/roupas_capa.jpg";
-                imagem = null;
-            }
-            else
-            {
-                imagem = null;
             }
 
             // =========================================================================================
@@ -89,7 +83,8 @@ public class HomeController : Controller
             if (string.IsNullOrEmpty(imagem))
             {
                 var produtosDaCategoria = await _api.GetProdutosAsync(categoriaId: cat.Id);
-                imagem = produtosDaCategoria.FirstOrDefault()?.ImagemUrl 
+                // Pega o produto mais antigo (menor ID) para ilustrar a categoria (Fixa a imagem do primeiro produto cadastrado)
+                imagem = produtosDaCategoria.OrderBy(p => p.Id).FirstOrDefault()?.ImagemUrl 
                              ?? "https://via.placeholder.com/320/000000/FFFFFF?text=" + cat.Nome;
             }
 
