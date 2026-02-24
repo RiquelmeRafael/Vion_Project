@@ -1,0 +1,236 @@
+@model Vion.Web.Areas.Admin.Models.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="admin-container">
+    <div class="admin-header">
+        <h1 class="admin-title">Dashboard</h1>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row mb-4">
+        <!-- Pedidos Card -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="admin-card h-100 border-start border-4 border-primary">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs fw-bold text-primary text-uppercase mb-1">
+                                Pedidos</div>
+                            <div class="h5 mb-0 fw-bold text-dark">@Model.TotalPedidos</div>
+                            <a asp-controller="Pedidos" asp-action="Index" class="btn btn-sm btn-outline-primary mt-3 rounded-pill">
+                                Ver Pedidos
+                            </a>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-shopping-bag fa-2x text-gray-500 opacity-50"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Produtos Card -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="admin-card h-100 border-start border-4 border-success">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs fw-bold text-success text-uppercase mb-1">
+                                Produtos</div>
+                            <div class="h5 mb-0 fw-bold text-dark">@Model.TotalProdutos</div>
+                            <a asp-controller="Produtos" asp-action="Index" class="btn btn-sm btn-outline-success mt-3 rounded-pill">
+                                Ver Produtos
+                            </a>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-tshirt fa-2x text-gray-500 opacity-50"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Categorias Card -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="admin-card h-100 border-start border-4 border-info">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs fw-bold text-info text-uppercase mb-1">
+                                Categorias</div>
+                            <div class="h5 mb-0 fw-bold text-dark">@Model.TotalCategorias</div>
+                            <a asp-controller="Categorias" asp-action="Index" class="btn btn-sm btn-outline-info mt-3 rounded-pill">
+                                Ver Categorias
+                            </a>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-tags fa-2x text-gray-500 opacity-50"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Usuários Card -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="admin-card h-100 border-start border-4 border-warning">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs fw-bold text-warning text-uppercase mb-1">
+                                Usuários</div>
+                            <div class="h5 mb-0 fw-bold text-dark">@Model.TotalUsuarios</div>
+                            <a asp-controller="Usuarios" asp-action="Index" class="btn btn-sm btn-outline-warning mt-3 rounded-pill">
+                                Ver Usuários
+                            </a>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-users fa-2x text-gray-500 opacity-50"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts and Tables -->
+    <div class="row">
+        <!-- Pie Chart -->
+        <div class="col-xl-4 col-lg-5 mb-4">
+            <div class="admin-card h-100">
+                <div class="card-header">
+                    <h6 class="m-0 fw-bold text-dark">Distribuição por Categoria</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-pie pt-4 pb-2">
+                        <canvas id="myPieChart" style="min-height: 250px;"></canvas>
+                    </div>
+                    <div class="mt-4 text-center small text-muted">
+                        <span class="mr-2">
+                            <i class="fas fa-circle text-primary"></i> Categorias
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ultimos Produtos -->
+        <div class="col-xl-8 col-lg-7 mb-4">
+            <div class="admin-card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 fw-bold text-dark">Últimos Produtos Cadastrados</h6>
+                    <a asp-controller="Produtos" asp-action="Index" class="btn btn-sm btn-outline-dark rounded-pill">Ver Todos</a>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table admin-table table-hover mb-0" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Imagem</th>
+                                    <th>Nome</th>
+                                    <th>Categoria</th>
+                                    <th>Preço</th>
+                                    <th class="text-end">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var produto in Model.UltimosProdutos)
+                                {
+                                    <tr>
+                                        <td class="text-center" style="width: 80px;">
+                                            @if (!string.IsNullOrEmpty(produto.ImagemUrl))
+                                            {
+                                                <img src="@produto.ImagemUrl" alt="@produto.Nome" style="width: 40px; height: 40px; object-fit: cover; border-radius: 8px;" />
+                                            }
+                                            else
+                                            {
+                                                <div class="bg-secondary d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; border-radius: 8px;">
+                                                    <i class="fas fa-camera text-white"></i>
+                                                </div>
+                                            }
+                                        </td>
+                                        <td class="align-middle fw-bold text-dark">@produto.Nome</td>
+                                        <td class="align-middle">
+                                            <span class="badge bg-light text-dark border border-secondary">@(produto.Categoria?.Nome ?? "Sem Categoria")</span>
+                                        </td>
+                                        <td class="align-middle text-success fw-bold">@produto.Preco.ToString("C")</td>
+                                        <td class="align-middle text-end">
+                                            <a asp-controller="Produtos" asp-action="Edit" asp-route-id="@produto.Id" class="btn-action btn-action-edit" title="Editar">
+                                                <i class="fa-solid fa-pen"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        (function () {
+            var canvas = document.getElementById("myPieChart");
+            if (!canvas) return;
+
+            var labels = @Html.Raw(Json.Serialize(Model.ProdutosPorCategoria.Keys));
+            var dataValues = @Html.Raw(Json.Serialize(Model.ProdutosPorCategoria.Values));
+
+            if (!labels || labels.length === 0) {
+                return;
+            }
+
+            Chart.defaults.font.family = 'Nunito, -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
+            Chart.defaults.color = '#d1d3e2';
+            Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.1)';
+
+            var colors = ['#0d6efd', '#198754', '#0dcaf0', '#ffc107', '#dc3545', '#6c757d', '#212529'];
+
+            new Chart(canvas, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: dataValues,
+                        backgroundColor: colors.slice(0, dataValues.length),
+                        hoverBackgroundColor: colors.slice(0, dataValues.length),
+                        hoverBorderColor: "#2c2c2c",
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'bottom',
+                            labels: {
+                                color: '#d1d3e2',
+                                padding: 20,
+                                usePointStyle: true
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: "#1e1e1e",
+                            titleColor: "#fff",
+                            bodyColor: "#fff",
+                            borderColor: "#333",
+                            borderWidth: 1,
+                            padding: 12,
+                            cornerRadius: 8,
+                            displayColors: true
+                        }
+                    },
+                    cutout: '70%'
+                }
+            });
+        })();
+    </script>
+}

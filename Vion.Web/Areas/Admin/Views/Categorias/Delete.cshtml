@@ -1,0 +1,41 @@
+@model Vion.Domain.Entities.Categoria
+
+@{
+    ViewData["Title"] = "Excluir Categoria";
+}
+
+<div class="admin-container">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="admin-card border-danger">
+                <div class="card-header bg-danger bg-opacity-10 border-danger border-bottom-0">
+                    <h4 class="mb-0 text-danger">Excluir Categoria</h4>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <i class="fa-solid fa-triangle-exclamation text-danger display-1 mb-3"></i>
+                        <h5 class="text-dark">Tem certeza que deseja excluir esta categoria?</h5>
+                        <p class="text-muted">Esta ação não poderá ser desfeita.</p>
+                    </div>
+                    
+                    <div class="bg-light p-3 rounded mb-4 border border-secondary">
+                        <dl class="row mb-0">
+                            <dt class="col-sm-3 text-dark">@Html.DisplayNameFor(model => model.Nome)</dt>
+                            <dd class="col-sm-9 text-muted">@Html.DisplayFor(model => model.Nome)</dd>
+                        </dl>
+                    </div>
+
+                    <form asp-action="Delete">
+                        <input type="hidden" asp-for="Id" />
+                        <div class="d-grid gap-3">
+                            <button type="submit" class="btn btn-danger btn-lg fw-bold rounded-3">
+                                <i class="fa-solid fa-trash me-2"></i> Confirmar Exclusão
+                            </button>
+                            <a asp-action="Index" class="btn-admin-cancel">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

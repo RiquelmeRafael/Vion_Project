@@ -1,0 +1,257 @@
+@using Vion.Web.Extensions
+@using Vion.Web.Models.ViewModels
+@using Microsoft.AspNetCore.Identity
+@using Vion.Domain.Entities
+@using Vion.Infrastructure.Persistence
+@inject AppDbContext _context
+@inject UserManager<Usuario> _userManager
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - VION</title>
+
+    <link rel="icon" type="image/png" href="~/images/iconVion.png" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+
+<body class="bg-white text-dark">
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-black sticky-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="Index">
+                <img src="~/images/logoVionCerta.png" alt="VION" style="height: 60px;" class="me-2">
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navMenu">
+                <ul class="navbar-nav ms-auto align-items-center gap-3">
+
+                    <li class="nav-item">
+                        <a class="nav-link d-flex align-items-center gap-1 text-white" asp-area="" asp-controller="Home" asp-action="Index">
+                            Início
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link d-flex align-items-center gap-1 text-white" asp-area="" asp-controller="Home" asp-action="Catalog">
+                            Produtos
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link d-flex align-items-center gap-1 text-white" asp-area="" asp-controller="Checkout" asp-action="MeusPedidos">
+                            Meus Pedidos
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link d-flex align-items-center gap-1 text-white" asp-area="" asp-controller="Home" asp-action="About">
+                            Sobre
+                        </a>
+                    </li>
+
+                    @if (User.Identity != null && User.Identity.IsAuthenticated && !User.IsInRole("Admin") && !User.IsInRole("Gerente"))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link d-flex align-items-center gap-1 text-white" asp-area="" asp-controller="Chat" asp-action="Index">
+                                <i class="bi bi-chat-dots fs-5"></i>
+                                Suporte
+                            </a>
+                        </li>
+                    }
+
+                    <li class="nav-item">
+                        <a class="nav-link d-flex align-items-center gap-1 text-white" asp-area="" asp-controller="Favoritos" asp-action="Index">
+                            <i class="bi bi-heart-fill navbar-heart-icon fs-5"></i>
+                            Favoritos
+                        </a>
+                    </li>
+
+                    @{
+                        var qtdItens = 0;
+                        if (User.Identity != null && User.Identity.IsAuthenticated)
+                        {
+                            var userIdStr = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                            if (int.TryParse(userIdStr, out int userId))
+                            {
+                                qtdItens = _context.CarrinhoItens.Where(c => c.UsuarioId == userId).Sum(c => c.Quantidade);
+                            }
+                        }
+                        else
+                        {
+                            var carrinho = Context.Session.Get<CarrinhoViewModel>("Carrinho");
+                            qtdItens = carrinho?.Itens.Sum(i => i.Quantidade) ?? 0;
+                        }
+                    }
+                    <li class="nav-item position-relative">
+                        <a class="nav-link d-flex align-items-center gap-1 text-white" asp-area="" asp-controller="Carrinho" asp-action="Index">
+                            <i class="bi bi-cart3 fs-5"></i>
+                            Carrinho
+                            @if (qtdItens > 0)
+                            {
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem;">
+                                    @qtdItens
+                                </span>
+                            }
+                        </a>
+                    </li>
+                    
+                    @if (User.Identity != null && User.Identity.IsAuthenticated)
+                    {
+                         <!-- ADMIN DROP DOWN -->
+                        @if (User.IsInRole("Admin") || User.IsInRole("Gerente"))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-warning" href="#" role="button" data-bs-toggle="dropdown">
+                                    <i class="bi bi-shield-lock"></i> Admin
+                                </a>
+                                <ul class="dropdown-menu">
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <li><a class="dropdown-item" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Dashboard</a></li>
+                                    }
+                                    <li><a class="dropdown-item" asp-area="Admin" asp-controller="Manage" asp-action="Index">Gerenciar Loja</a></li>
+                                </ul>
+                            </li>
+                        }
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle d-flex align-items-center gap-1 text-white" href="#" role="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-person-circle fs-5"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><span class="dropdown-item-text text-muted small">Olá, @User.Identity.Name</span></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Perfil" asp-action="Index">Minha Conta</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form asp-area="" asp-controller="Auth" asp-action="Logout" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="dropdown-item text-danger">Sair</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item ms-2">
+                            <a class="nav-link d-flex align-items-center gap-1 text-white" asp-area="" asp-controller="Auth" asp-action="Login">
+                                <i class="bi bi-box-arrow-in-right fs-5"></i> Entrar
+                            </a>
+                        </li>
+                    }
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-5">
+        @if (TempData["MensagemSucesso"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                @TempData["MensagemSucesso"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        @if (TempData["MensagemErro"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                @TempData["MensagemErro"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        @RenderBody()
+    </div>
+
+    <footer class="bg-black text-white pt-5 pb-4 mt-auto">
+        <div class="container">
+            <div class="row">
+                <!-- Encontre / Links principais -->
+                <div class="col-md-3 mb-4">
+                    <h6 class="text-uppercase fw-bold mb-3 text-white">Encontre</h6>
+                    <ul class="list-unstyled d-flex flex-column gap-2">
+                        <li><a asp-area="" asp-controller="Home" asp-action="Index" class="text-white-50 text-decoration-none small">Home</a></li>
+                        <li><a asp-area="" asp-controller="Home" asp-action="Catalog" class="text-white-50 text-decoration-none small">Produtos</a></li>
+                        <li><a asp-area="" asp-controller="Checkout" asp-action="MeusPedidos" class="text-white-50 text-decoration-none small">Meus Pedidos</a></li>
+                        <li><a asp-area="" asp-controller="Carrinho" asp-action="Index" class="text-white-50 text-decoration-none small">Carrinho</a></li>
+                    </ul>
+                </div>
+
+                <!-- Ajuda -->
+                <div class="col-md-3 mb-4">
+                    <h6 class="text-uppercase fw-bold mb-3 text-white">Ajuda</h6>
+                    <ul class="list-unstyled d-flex flex-column gap-2">
+                        @if (User.Identity != null && User.Identity.IsAuthenticated && !User.IsInRole("Admin") && !User.IsInRole("Gerente"))
+                        {
+                            <li><a asp-area="" asp-controller="Chat" asp-action="Index" class="text-white-50 text-decoration-none small">Suporte</a></li>
+                        }
+                        <li><a asp-area="" asp-controller="Home" asp-action="About" class="text-white-50 text-decoration-none small">Sobre</a></li>
+                        <li><a href="#" class="text-white-50 text-decoration-none small">Termos de Uso</a></li>
+                        <li><a href="#" class="text-white-50 text-decoration-none small">Política de Privacidade</a></li>
+                    </ul>
+                </div>
+
+                <!-- Sobre a Vion -->
+                <div class="col-md-3 mb-4">
+                    <h6 class="text-uppercase fw-bold mb-3 text-white">Sobre a Vion</h6>
+                    <ul class="list-unstyled d-flex flex-column gap-2">
+                        <li><a asp-area="" asp-controller="Home" asp-action="About" class="text-white-50 text-decoration-none small">Propósito</a></li>
+                        <li><a href="#" class="text-white-50 text-decoration-none small">Sustentabilidade</a></li>
+                        <li><a href="#" class="text-white-50 text-decoration-none small">Carreiras</a></li>
+                    </ul>
+                </div>
+
+                <!-- Redes Sociais e Pagamento -->
+                <div class="col-md-3 mb-4">
+                    <h6 class="text-uppercase fw-bold mb-3 text-white">Redes Sociais</h6>
+                    <div class="d-flex gap-3 mb-4">
+                        <a href="#" class="text-white fs-4"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="text-white fs-4"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="text-white fs-4"><i class="bi bi-youtube"></i></a>
+                        <a href="#" class="text-white fs-4"><i class="bi bi-twitter-x"></i></a>
+                    </div>
+                    
+                    <h6 class="text-uppercase fw-bold mb-3 text-white">Pagamento</h6>
+                     <div class="d-flex gap-2">
+                        <i class="bi bi-credit-card-2-front fs-3 text-white-50"></i>
+                        <i class="bi bi-paypal fs-3 text-white-50"></i>
+                        <i class="bi bi-bank fs-3 text-white-50"></i>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="border-secondary my-4">
+
+            <div class="row align-items-center">
+                 <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                    <div class="d-flex align-items-center justify-content-center justify-content-md-start gap-2">
+                        <i class="bi bi-geo-alt-fill text-white"></i>
+                        <span class="text-white small">Brasil</span>
+                    </div>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <small class="text-white-50">© @DateTime.Now.Year Vion. Todos os direitos reservados.</small>
+                    <small class="d-block text-white-50 mt-1">Desenvolvido por Karlos e Riquelme</small>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    @RenderSection("Scripts", required: false)
+
+</body>
+</html>

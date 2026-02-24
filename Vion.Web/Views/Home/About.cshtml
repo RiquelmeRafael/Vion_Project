@@ -1,0 +1,114 @@
+@{
+    ViewData["Title"] = "Sobre";
+}
+
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+<div class="container py-4">
+    <!-- Carousel -->
+    <div id="aboutCarousel" class="carousel slide mb-5 rounded-4 overflow-hidden shadow-lg" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#aboutCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#aboutCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#aboutCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+        </div>
+        <div class="carousel-inner">
+            <div class="carousel-item active" style="height: 400px;">
+                <img src="~/images/Carrosel1Vion.jpeg" class="d-block w-100 h-100 object-fit-cover" alt="Vion Slide 1" style="object-position: center;">
+                <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded-3 p-3">
+                    <h5>Inovação e Tecnologia</h5>
+                    <p>Uma plataforma moderna pensada para o futuro.</p>
+                </div>
+            </div>
+            <div class="carousel-item" style="height: 400px;">
+                <img src="~/images/Carrosel2Vion.jpeg" class="d-block w-100 h-100 object-fit-cover" alt="Vion Slide 2" style="object-position: center;">
+                <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded-3 p-3">
+                    <h5>Design e Usabilidade</h5>
+                    <p>Interface intuitiva para a melhor experiência do usuário.</p>
+                </div>
+            </div>
+            <div class="carousel-item" style="height: 400px;">
+                <img src="~/images/Carrosel3Vion.jpeg" class="d-block w-100 h-100 object-fit-cover" alt="Vion Slide 3" style="object-position: center;">
+                <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded-3 p-3">
+                    <h5>Segurança e Performance</h5>
+                    <p>Arquitetura robusta e escalável.</p>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#aboutCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Anterior</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#aboutCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Próximo</span>
+        </button>
+    </div>
+
+    <!-- Content -->
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="text-center mb-5">
+                <h1 class="display-4 fw-bold text-primary mb-3">Sobre a VION</h1>
+                <div class="d-inline-block bg-primary" style="height: 4px; width: 80px; border-radius: 2px;"></div>
+            </div>
+
+            <div class="bg-white p-5 rounded-4 shadow-sm border mb-5">
+                <p class="lead text-dark mb-4" style="line-height: 1.8; text-align: justify;">
+                    A <strong class="text-primary">VION</strong> é uma plataforma moderna desenvolvida com foco em inovação, organização e experiência do usuário. Criada para oferecer uma navegação intuitiva e funcionalidades bem estruturadas, a VION nasceu com o objetivo de facilitar o gerenciamento e a visualização de produtos, unindo tecnologia, desempenho e segurança em um único ambiente digital.
+                </p>
+
+                <p class="text-muted mb-4" style="line-height: 1.8; text-align: justify;">
+                    Este site foi desenvolvido por <strong>Karlos e Riquelme</strong> no ano de 2026, como parte de um projeto completo que integra uma aplicação Web robusta com uma API própria, seguindo boas práticas de desenvolvimento e arquitetura de software. Todo o sistema foi pensado para ser escalável, seguro e de fácil manutenção, utilizando autenticação, controle de permissões por perfil de usuário e integração direta com banco de dados.
+                </p>
+
+                <p class="text-muted mb-4" style="line-height: 1.8; text-align: justify;">
+                    A VION conta com diferentes níveis de acesso, como <span class="badge bg-secondary">Administrador</span>, <span class="badge bg-secondary">Gerente</span> e <span class="badge bg-secondary">Usuário</span>, garantindo que cada perfil tenha acesso apenas às funcionalidades necessárias. No painel administrativo, é possível gerenciar produtos, categorias e outras informações essenciais do sistema, enquanto usuários comuns podem navegar, visualizar conteúdos e utilizar os recursos disponíveis de forma simples e eficiente.
+                </p>
+
+                <p class="text-muted mb-4" style="line-height: 1.8; text-align: justify;">
+                    Além da parte funcional, a VION também se preocupa com o visual e a usabilidade, oferecendo uma interface moderna, responsiva e agradável. O projeto foi desenvolvido para servir tanto como uma solução prática quanto como uma demonstração de conhecimento técnico, organização de código e aplicação de conceitos reais do mercado de desenvolvimento de software.
+                </p>
+
+                <div class="mt-5 p-4 bg-light rounded-3 border-start border-4 border-primary">
+                    <p class="fst-italic mb-0 text-dark fw-medium">
+                        "A VION representa mais do que um site: é o resultado de planejamento, dedicação e aprendizado contínuo, mostrando como a tecnologia pode ser usada para criar soluções completas, eficientes e profissionais."
+                    </p>
+                </div>
+            </div>
+
+            <!-- Animated Text Section -->
+            <div class="text-center py-5" data-aos="fade-up" data-aos-duration="1500">
+                <div class="position-relative p-5 rounded-4 bg-black text-white overflow-hidden shadow-lg" style="background: linear-gradient(145deg, #000000 0%, #1a1a1a 100%);">
+                    <!-- Decorative background element -->
+                    <div class="position-absolute top-0 start-0 w-100 h-100 opacity-10" style="background-image: radial-gradient(circle at 30% 30%, #4a4a4a 0%, transparent 60%); pointer-events: none;"></div>
+                    
+                    <div class="position-relative z-1">
+                        <i class="bi bi-quote fs-1 text-white-50 mb-3 d-block"></i>
+                        <h3 class="fw-light mb-4" style="letter-spacing: 1px; line-height: 1.6;">
+                            VION é inovação, tecnologia e praticidade em um só lugar.
+                        </h3>
+                        <p class="fs-5 text-white-50 mx-auto" style="max-width: 800px; line-height: 1.8;">
+                            Uma plataforma moderna desenvolvida para oferecer controle, organização e uma experiência simples e eficiente, unindo design atual com funcionalidades inteligentes para atender diferentes perfis de usuários.
+                        </p>
+                        <p class="fs-4 fw-semibold mt-4 mb-0 text-white">
+                            Tudo o que você procura, com os melhores preços. <br>
+                            <span class="text-primary">Seu lugar é aqui.</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            once: true, // Animation happens only once while scrolling down
+            offset: 120 // Offset (in px) from the original trigger point
+        });
+    </script>
+}

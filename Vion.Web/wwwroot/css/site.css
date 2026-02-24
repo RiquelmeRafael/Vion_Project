@@ -1,0 +1,244 @@
+
+/* ... existing content ... */
+
+footer .bi:hover {
+    color: #fff !important;
+}
+
+/* ===============================
+   ADMIN CRUD STYLES
+=============================== */
+
+/* Container & Header */
+.admin-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-top: 2rem;
+    padding-bottom: 3rem;
+}
+
+.admin-header {
+    margin-bottom: 2rem;
+}
+
+.admin-title {
+    font-size: 2.75rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    color: #212529;
+}
+
+/* Cards */
+.admin-card {
+    border-radius: 14px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 18px 45px rgba(15, 23, 42, 0.10);
+    background-color: #fff;
+    overflow: hidden; /* Ensures content respects rounded corners */
+}
+
+.admin-card .card-body {
+    padding: 1.4rem 1.6rem;
+}
+
+.admin-card .card-header {
+    border-bottom: 1px solid #e5e7eb;
+    background-color: #ffffff;
+    padding: 1rem 1.5rem;
+}
+
+/* Tables */
+.admin-table thead {
+    background-color: #f8f9fa;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.06em;
+    color: #212529;
+    font-weight: 700;
+}
+
+.admin-table th {
+    border-bottom: none;
+    padding: 1rem;
+}
+
+.admin-table td {
+    padding: 1rem;
+    vertical-align: middle;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.admin-table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.admin-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Action Buttons */
+.btn-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid #dee2e6;
+    color: #6c757d;
+    background-color: #ffffff;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+    margin: 0 2px;
+    text-decoration: none;
+}
+
+.btn-action-edit:hover {
+    border-color: #0d6efd;
+    background-color: #0d6efd;
+    color: #ffffff;
+}
+
+.btn-action-delete:hover {
+    border-color: #dc3545;
+    background-color: #dc3545;
+    color: #ffffff;
+}
+
+.btn-action-view:hover, .btn-action-success:hover {
+    border-color: #198754;
+    background-color: #198754;
+    color: #ffffff;
+}
+
+/* Form Styles */
+.admin-form-label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.admin-form-control, .admin-form-select {
+    display: block;
+    width: 100%;
+    padding: 0.6rem 0.8rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+.admin-form-control:focus, .admin-form-select:focus {
+    border-color: #86b7fe;
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Admin Specific Buttons */
+.btn-admin-create {
+    display: inline-flex;
+    align-items: center;
+    background-color: #0d6efd;
+    color: white;
+    padding: 0.6rem 1.2rem;
+    border-radius: 50rem; /* Pill shape */
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+    border: none;
+    box-shadow: 0 4px 6px rgba(13, 110, 253, 0.2);
+}
+
+.btn-admin-create:hover {
+    background-color: #0b5ed7;
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 12px rgba(13, 110, 253, 0.25);
+}
+
+.btn-admin-save {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #198754;
+    color: white;
+    padding: 0.6rem 1.5rem;
+    border-radius: 6px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+    border: none;
+    width: 100%;
+}
+
+.btn-admin-save:hover {
+    background-color: #157347;
+    color: white;
+}
+
+.btn-admin-cancel {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #6c757d;
+    color: white;
+    padding: 0.6rem 1.5rem;
+    border-radius: 6px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+    border: none;
+    width: 100%;
+}
+
+.btn-admin-cancel:hover {
+    background-color: #5c636a;
+    color: white;
+}
+
+@media (min-width: 768px) {
+    .btn-admin-save, .btn-admin-cancel {
+        width: auto;
+    }
+}
+
+/* Badges in Tables */
+.badge {
+    font-weight: 600;
+    padding: 0.5em 0.8em;
+    border-radius: 6px;
+}
+
+/* Custom Scrollbar */
+:root {
+    color-scheme: dark;
+}
+
+html {
+    scrollbar-color: #333 #000;
+}
+
+::-webkit-scrollbar {
+    width: 16px;
+    background-color: #000;
+}
+
+::-webkit-scrollbar-track {
+    background-color: #000;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #333;
+    border: 3px solid #000;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #555;
+}

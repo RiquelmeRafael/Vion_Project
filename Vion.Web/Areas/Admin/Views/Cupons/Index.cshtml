@@ -1,0 +1,58 @@
+@model IEnumerable<Vion.Domain.Entities.Cupom>
+
+@{
+    ViewData["Title"] = "Cupons";
+}
+
+<div class="admin-container">
+    <div class="admin-header">
+        <h1 class="admin-title">Cupons</h1>
+        <a asp-action="Create" class="btn-admin-create">
+            <i class="fa-solid fa-plus"></i> Novo Cupom
+        </a>
+    </div>
+
+    <div class="admin-card">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table admin-table">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Desconto (%)</th>
+                            <th>Status</th>
+                            <th class="text-end">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="align-middle fw-bold text-dark">@item.Codigo</td>
+                                <td class="align-middle">@item.PercentualDesconto.ToString("F2")%</td>
+                                <td class="align-middle">
+                                    @if (item.Ativo)
+                                    {
+                                        <span class="badge bg-success rounded-pill px-3">Ativo</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary rounded-pill px-3">Inativo</span>
+                                    }
+                                </td>
+                                <td class="text-end">
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn-action btn-action-edit" title="Editar">
+                                        <i class="fa-solid fa-pen"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn-action btn-action-delete" title="Excluir">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

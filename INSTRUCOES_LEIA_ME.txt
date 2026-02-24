@@ -1,0 +1,31 @@
+INSTRUÇÕES DE INSTALAÇÃO - PROJETO VION (FINAL)
+===============================================
+
+Este projeto está limpo e pronto para execução em ambiente acadêmico.
+
+1. Pré-requisitos:
+   - .NET 8 SDK instalado.
+   - SQL Server Express (ou LocalDB).
+
+2. Configuração:
+   - O banco de dados está configurado para 'localhost\SQLEXPRESS'.
+   - Se precisar mudar, edite: Vion.Web/appsettings.json
+
+3. Como Rodar:
+   - Abra o terminal na pasta deste arquivo.
+   - Restaure as dependências:
+     dotnet restore
+
+   - Atualize o banco de dados (Cria as tabelas novas de Perfil e Destaques):
+     dotnet ef database update --project Vion.Infrastructure --startup-project Vion.Web
+
+   - Inicie o projeto:
+     dotnet run --project Vion.Web
+
+4. Novidades Incluídas:
+   - Área 'Minha Conta' (Editar Perfil e Senha).
+   - Validação de Telefone com máscara.
+   - Chat Assíncrono.
+   - Scrollbar customizada.
+
+Sucesso na apresentação!

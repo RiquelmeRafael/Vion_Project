@@ -1,0 +1,347 @@
+@model IEnumerable<Vion.Domain.Entities.Pedido>
+
+@{
+    ViewData["Title"] = "Meus Pedidos";
+    Layout = "_Layout";
+    var avaliacoesFeitas = ViewBag.AvaliacoesFeitas as HashSet<string> ?? new HashSet<string>();
+}
+
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+    .order-card {
+        background: #fff;
+        border: 1px solid #eef0f2;
+        border-radius: 16px;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.03);
+        transition: all 0.3s ease;
+    }
+    .order-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+    }
+    
+    /* Status Badges - Cores pastéis e elegantes */
+    .status-badge {
+        padding: 8px 20px;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .status-pendente { background-color: #FFF8E1; color: #BFA15F; } /* Amarelo/Dourado suave */
+    .status-aprovado { background-color: #E6F4EA; color: #1E7E34; } /* Verde suave */
+    .status-enviado { background-color: #E3F2FD; color: #1565C0; } /* Azul suave */
+    .status-entregue { background-color: #E6F4EA; color: #1E7E34; }
+    .status-cancelado { background-color: #FCE8E6; color: #C62828; } /* Vermelho suave */
+
+    .product-img-box {
+        width: 110px;
+        height: 110px;
+        border-radius: 12px;
+        overflow: hidden;
+        background-color: #f1f3f5;
+        border: 1px solid #eee;
+    }
+    .product-img-box img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .info-label {
+        color: #6c757d;
+        font-size: 0.9rem;
+        margin-bottom: 4px;
+    }
+    .info-value {
+        color: #212529;
+        font-weight: 500;
+        line-height: 1.4;
+    }
+
+    .cancel-btn {
+        background: none;
+        border: none;
+        color: #dc3545;
+        text-decoration: underline;
+        font-size: 0.9rem;
+        padding: 0;
+        margin-top: 8px;
+        transition: color 0.2s;
+    }
+    .cancel-btn:hover {
+        color: #a71d2a;
+    }
+    
+    .total-label {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #212529;
+    }
+    .total-value {
+        font-size: 1.25rem;
+        font-weight: 800;
+        color: #0f172a;
+    }
+
+</style>
+
+<div class="container py-5" style="max-width: 900px;">
+    
+    @if (TempData["Mensagem"] != null)
+    {
+        <div class="alert alert-success border-0 shadow-sm rounded-3 mb-4">
+            <i class="fa-solid fa-check-circle me-2"></i> @TempData["Mensagem"]
+        </div>
+    }
+    @if (TempData["Erro"] != null)
+    {
+        <div class="alert alert-danger border-0 shadow-sm rounded-3 mb-4">
+            <i class="fa-solid fa-circle-exclamation me-2"></i> @TempData["Erro"]
+        </div>
+    }
+
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <h2 class="fw-bold text-dark m-0">Meus Pedidos</h2>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-dark rounded-pill px-4">
+            <i class="fa-solid fa-arrow-left me-2"></i> Voltar à Loja
+        </a>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="text-center py-5">
+            <div class="mb-4">
+                <i class="fa-solid fa-bag-shopping fa-4x text-muted opacity-25"></i>
+            </div>
+            <h4 class="fw-bold text-muted">Nenhum pedido encontrado</h4>
+            <p class="text-muted mb-4">Você ainda não realizou nenhuma compra conosco.</p>
+            <a asp-controller="Home" asp-action="Index" class="btn btn-dark rounded-pill px-5 py-3 fw-bold">
+                Começar a comprar
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="d-flex flex-column gap-4">
+            @foreach (var pedido in Model.OrderByDescending(p => p.DataPedido))
+            {
+                var status = pedido.Status ?? "Pendente";
+                var statusClass = status.ToLower() switch {
+                    "pendente" => "status-pendente",
+                    "aprovado" => "status-aprovado",
+                    "pagamento aprovado" => "status-aprovado",
+                    "enviado" => "status-enviado",
+                    "entregue" => "status-entregue",
+                    "cancelado" => "status-cancelado",
+                    _ => "bg-light text-dark"
+                };
+
+                <div class="order-card p-4">
+                    <!-- Header -->
+                    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-3 border-bottom border-light">
+                        <div class="d-flex align-items-center gap-3">
+                            <h4 class="fw-bold mb-0 text-dark">Pedido #@pedido.Id</h4>
+                            <span class="text-muted border-start ps-3">@pedido.DataPedido.ToString("d 'de' MMMM 'de' yyyy")</span>
+                        </div>
+                        <span class="status-badge @statusClass mt-2 mt-md-0">
+                            @status
+                        </span>
+                    </div>
+
+                    <!-- Body -->
+                    <div class="row g-4">
+                        <!-- Left Column: Products -->
+                        <div class="col-lg-7">
+                            @foreach (var item in pedido.Itens)
+                            {
+                                <div class="d-flex gap-3 mb-4">
+                                    <div class="product-img-box flex-shrink-0">
+                                        @if (!string.IsNullOrEmpty(item.Produto?.ImagemUrl))
+                                        {
+                                            <img src="@item.Produto.ImagemUrl" alt="@item.Produto.Nome">
+                                        }
+                                        else
+                                        {
+                                            <div class="d-flex align-items-center justify-content-center h-100 text-muted">
+                                                <i class="fa-regular fa-image fa-2x"></i>
+                                            </div>
+                                        }
+                                    </div>
+                                    <div class="d-flex flex-column justify-content-center align-items-start">
+                                        <h5 class="fw-bold text-dark mb-1">@item.Produto?.Nome</h5>
+                                        <div class="text-muted small mb-2">Quantidade: @item.Quantidade</div>
+                                        <div class="fw-semibold text-dark">@item.PrecoUnitario.ToString("C")</div>
+                                        
+                                        @if (status == "Entregue" && !avaliacoesFeitas.Contains($"{pedido.Id}-{item.ProdutoId}"))
+                                        {
+                                            <button class="btn btn-sm btn-outline-warning rounded-pill mt-2" 
+                                                    onclick="abrirModalAvaliacao(@pedido.Id, @item.ProdutoId, '@(item.Produto?.Nome?.Replace("'", "\\'"))', '@item.Produto?.ImagemUrl')">
+                                                <i class="fa-regular fa-star me-1"></i> Avaliar
+                                            </button>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+
+                        <!-- Right Column: Delivery & Payment -->
+                        <div class="col-lg-5 ps-lg-5 border-start-lg">
+                            <div class="mb-4">
+                                <h6 class="fw-bold text-dark mb-2">Detalhes da Entrega</h6>
+                                <p class="text-muted mb-0" style="font-size: 0.95rem; line-height: 1.5;">
+                                    @pedido.Endereco<br>
+                                    @pedido.Cidade - @pedido.Estado<br>
+                                    <strong>CEP:</strong> @pedido.Cep
+                                </p>
+                            </div>
+                            
+                            <div class="mb-2">
+                                <h6 class="fw-bold text-dark mb-1">Forma de Pagamento:</h6>
+                                <div class="d-flex align-items-center text-dark fw-medium">
+                                    @if (pedido.FormaPagamento?.ToLower().Contains("pix") == true)
+                                    {
+                                        <i class="fa-brands fa-pix text-primary me-2"></i> <span>Pix</span>
+                                    }
+                                    else
+                                    {
+                                        <i class="fa-regular fa-credit-card me-2"></i> <span>@pedido.FormaPagamento</span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Footer / Totals -->
+                    <div class="mt-4 pt-3 border-top border-light">
+                        <div class="row align-items-end">
+                            <div class="col-md-6 mb-3 mb-md-0">
+                                <!-- Placeholder for future actions like 'Track Order' -->
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex justify-content-between mb-2 text-muted">
+                                    <span>Subtotal</span>
+                                    <span>@((pedido.ValorTotal - pedido.ValorFrete + pedido.ValorDesconto).ToString("C"))</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2 text-muted">
+                                    <span>Frete</span>
+                                    <span>@pedido.ValorFrete.ToString("C")</span>
+                                </div>
+                                @if (pedido.ValorDesconto > 0)
+                                {
+                                    <div class="d-flex justify-content-between mb-2 text-success">
+                                        <span>Desconto</span>
+                                        <span>- @pedido.ValorDesconto.ToString("C")</span>
+                                    </div>
+                                }
+                                <div class="d-flex justify-content-between align-items-center mt-3 pt-2 border-top">
+                                    <span class="total-label">Total</span>
+                                    <span class="total-value">@pedido.ValorTotal.ToString("C")</span>
+                                </div>
+
+                                @if (status.ToLower() == "pendente")
+                                {
+                                    <div class="text-end mt-3">
+                                        <form asp-action="CancelarPedido" method="post" onsubmit="return confirm('Tem certeza que deseja cancelar este pedido?');">
+                                            <input type="hidden" name="id" value="@pedido.Id" />
+                                            <button type="submit" class="btn btn-outline-danger rounded-pill px-4 py-2 fw-bold">
+                                                <i class="fa-solid fa-ban me-2"></i> Cancelar Pedido
+                                            </button>
+                                        </form>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+<!-- Modal Avaliação -->
+<div class="modal fade" id="modalAvaliacao" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form asp-controller="Avaliacao" asp-action="Adicionar" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="pedidoId" id="avalPedidoId" />
+                <input type="hidden" name="produtoId" id="avalProdutoId" />
+                
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-bold">Avaliar Produto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img id="avalImg" src="" class="img-thumbnail mb-3" style="width: 80px; height: 80px; object-fit: cover;">
+                    <h6 id="avalNome" class="fw-bold mb-4"></h6>
+
+                    <div class="mb-3">
+                        <label class="form-label d-block text-muted small">Sua nota (0 a 10)</label>
+                        <input type="number"
+                               name="nota"
+                               id="avalNota"
+                               class="form-control text-center mx-auto"
+                               style="max-width: 120px;"
+                               min="0"
+                               max="10"
+                               step="1"
+                               placeholder="Ex: 8" />
+                    </div>
+                    
+                    <div class="mb-3 text-start">
+                        <label class="form-label small fw-bold">Seu comentário (opcional)</label>
+                        <textarea name="comentario" class="form-control" rows="3" placeholder="O que você achou do produto?"></textarea>
+                    </div>
+
+                    <div class="mb-3 text-start">
+                         <label class="form-label small fw-bold">Foto (opcional)</label>
+                         <input type="file" name="imagem" class="form-control" accept="image/*">
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-dark px-4">Enviar Avaliação</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function abrirModalAvaliacao(pedidoId, produtoId, nome, img) {
+        document.getElementById('avalPedidoId').value = pedidoId;
+        document.getElementById('avalProdutoId').value = produtoId;
+        document.getElementById('avalNome').textContent = nome;
+
+        var notaInput = document.getElementById('avalNota');
+        if (notaInput) {
+            notaInput.value = "";
+        }
+
+        var comentarioTextarea = document.querySelector('textarea[name="comentario"]');
+        if (comentarioTextarea) {
+            comentarioTextarea.value = "";
+        }
+
+        var imagemInput = document.querySelector('input[name="imagem"]');
+        if (imagemInput) {
+            imagemInput.value = "";
+        }
+
+        var imgEl = document.getElementById('avalImg');
+        if (imgEl) {
+            if (img) {
+                imgEl.src = img;
+                imgEl.style.display = 'inline-block';
+            } else {
+                imgEl.style.display = 'none';
+            }
+        }
+
+        var myModal = new bootstrap.Modal(document.getElementById('modalAvaliacao'));
+        myModal.show();
+    }
+</script>

@@ -1,0 +1,39 @@
+@model Vion.Domain.Entities.Tamanho
+
+@{
+    ViewData["Title"] = "Novo Tamanho";
+}
+
+<div class="admin-container">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="admin-card">
+                <div class="card-header">
+                    <h4 class="mb-0 text-dark">Novo Tamanho</h4>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                        
+                        <div class="mb-4">
+                            <label asp-for="Nome" class="admin-form-label">Nome</label>
+                            <input asp-for="Nome" class="form-control admin-form-control" />
+                            <span asp-validation-for="Nome" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-grid gap-3">
+                            <button type="submit" class="btn-admin-save">
+                                <i class="fa-solid fa-save me-2"></i> Salvar
+                            </button>
+                            <a asp-action="Index" class="btn-admin-cancel">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

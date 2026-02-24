@@ -1,0 +1,232 @@
+@{
+    ViewData["Title"] = "Gerenciamento";
+}
+
+<div class="admin-container">
+    <div class="admin-header">
+        <h1 class="admin-title">Gerenciamento</h1>
+        <p class="text-muted mb-0">Área de administração de conteúdo.</p>
+    </div>
+
+    <div class="row">
+        <!-- Produtos Card -->
+        <div class="col-md-4 mb-4">
+            <div class="admin-card h-100 border-start border-4 border-primary">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs fw-bold text-primary text-uppercase mb-1">
+                                Produtos
+                            </div>
+                            <p class="mb-0 text-muted small">Gerenciar catálogo de produtos.</p>
+                            <a asp-controller="Produtos" asp-action="Index" class="btn btn-sm btn-outline-primary mt-3 rounded-pill">
+                                <i class="fa-solid fa-box me-1"></i> Acessar
+                            </a>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-box fa-3x text-gray-500 opacity-25"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hero da Home Card -->
+        <div class="col-md-4 mb-4">
+            <div class="admin-card h-100 border-start border-4 border-dark">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs fw-bold text-dark text-uppercase mb-1">
+                                Hero da Home
+                            </div>
+                            <p class="mb-0 text-muted small">Editar destaque principal e brilho da Home.</p>
+                            <a asp-controller="Manage" asp-action="EditHomeHero" class="btn btn-sm btn-outline-dark mt-3 rounded-pill">
+                                <i class="fa-solid fa-bolt me-1"></i> Configurar Hero
+                            </a>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-bolt fa-3x text-gray-500 opacity-25"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Destaques da semana Card -->
+        <div class="col-md-4 mb-4">
+            <div class="admin-card h-100 border-start border-4 border-secondary">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs fw-bold text-secondary text-uppercase mb-1">
+                                Destaques da semana
+                            </div>
+                            <p class="mb-0 text-muted small">Configurar cards em destaque na Home.</p>
+                            <a asp-controller="Manage" asp-action="EditHomeFeatured" class="btn btn-sm btn-outline-secondary mt-3 rounded-pill">
+                                <i class="fa-solid fa-star me-1"></i> Configurar destaques
+                            </a>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-star fa-3x text-gray-500 opacity-25"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Categorias Card -->
+        <div class="col-md-4 mb-4">
+            <div class="admin-card h-100 border-start border-4 border-success">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs fw-bold text-success text-uppercase mb-1">
+                                Categorias
+                            </div>
+                            <p class="mb-0 text-muted small">Gerenciar categorias do sistema.</p>
+                            <a asp-controller="Categorias" asp-action="Index" class="btn btn-sm btn-outline-success mt-3 rounded-pill">
+                                <i class="fa-solid fa-tags me-1"></i> Acessar
+                            </a>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-tags fa-3x text-gray-500 opacity-25"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tamanhos Card -->
+        <div class="col-md-4 mb-4">
+            <div class="admin-card h-100 border-start border-4 border-info">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs fw-bold text-info text-uppercase mb-1">
+                                Tamanhos
+                            </div>
+                            <p class="mb-0 text-muted small">Gerenciar tamanhos disponíveis.</p>
+                            <a asp-controller="Tamanhos" asp-action="Index" class="btn btn-sm btn-outline-info mt-3 rounded-pill">
+                                <i class="fa-solid fa-ruler me-1"></i> Acessar
+                            </a>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-ruler fa-3x text-gray-500 opacity-25"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cupons Card -->
+        <div class="col-md-4 mb-4">
+            <div class="admin-card h-100 border-start border-4 border-warning">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs fw-bold text-warning text-uppercase mb-1">
+                                Cupons
+                            </div>
+                            <p class="mb-0 text-muted small">Gerenciar cupons de desconto.</p>
+                            <a asp-controller="Cupons" asp-action="Index" class="btn btn-sm btn-outline-warning mt-3 rounded-pill">
+                                <i class="fa-solid fa-ticket me-1"></i> Acessar
+                            </a>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-ticket fa-3x text-gray-500 opacity-25"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Usuários Card -->
+        <div class="col-md-4 mb-4">
+            <div class="admin-card h-100 border-start border-4 border-secondary">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs fw-bold text-secondary text-uppercase mb-1">
+                                Usuários
+                            </div>
+                            <p class="mb-0 text-muted small">Gerenciar usuários e acessos.</p>
+                            <a asp-controller="Usuarios" asp-action="Index" class="btn btn-sm btn-outline-secondary mt-3 rounded-pill">
+                                <i class="fa-solid fa-users me-1"></i> Acessar
+                            </a>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-users fa-3x text-gray-500 opacity-25"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pedidos Card -->
+        <div class="col-md-4 mb-4">
+            <div class="admin-card h-100 border-start border-4 border-primary">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs fw-bold text-primary text-uppercase mb-1">
+                                Pedidos
+                            </div>
+                            <p class="mb-0 text-muted small">Gerenciar pedidos da loja.</p>
+                            <a asp-controller="Pedidos" asp-action="Index" class="btn btn-sm btn-outline-primary mt-3 rounded-pill">
+                                <i class="fa-solid fa-shopping-bag me-1"></i> Ver pedidos
+                            </a>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-shopping-bag fa-3x text-gray-500 opacity-25"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Avaliações Card -->
+        <div class="col-md-4 mb-4">
+            <div class="admin-card h-100 border-start border-4 border-danger">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs fw-bold text-danger text-uppercase mb-1">
+                                Avaliações
+                            </div>
+                            <p class="mb-0 text-muted small">Visualizar e apagar comentários de produtos.</p>
+                            <a asp-controller="Avaliacoes" asp-action="Index" class="btn btn-sm btn-outline-danger mt-3 rounded-pill">
+                                <i class="fa-solid fa-comment-slash me-1"></i> Gerenciar avaliações
+                            </a>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-comments fa-3x text-gray-500 opacity-25"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Atendimento Card -->
+        <div class="col-md-4 mb-4">
+            <div class="admin-card h-100 border-start border-4 border-dark">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs fw-bold text-dark text-uppercase mb-1">
+                                Atendimento
+                            </div>
+                            <p class="mb-0 text-muted small">Responder mensagens de clientes.</p>
+                            <a asp-controller="Chat" asp-action="Index" class="btn btn-sm btn-outline-dark mt-3 rounded-pill">
+                                <i class="bi bi-chat-dots me-1"></i> Ver conversas
+                            </a>
+                        </div>
+                        <div class="col-auto">
+                            <i class="bi bi-headset fs-1 text-gray-500 opacity-25"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

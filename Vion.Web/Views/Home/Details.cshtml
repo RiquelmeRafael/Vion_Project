@@ -1,0 +1,583 @@
+@model Vion.Web.Models.ViewModels.ProductDetailsViewModel
+
+@{
+    ViewData["Title"] = Model.Produto.Nome;
+    var categoriasTamanho = Model.VariantesOrdenadas.Select(v => v.Tamanho).Distinct().ToList();
+
+    var images = new List<string>();
+    if (!string.IsNullOrEmpty(Model.Produto.ImagemUrl)) images.Add(Model.Produto.ImagemUrl);
+    if (!string.IsNullOrEmpty(Model.Produto.ImagemUrl2)) images.Add(Model.Produto.ImagemUrl2);
+    if (!string.IsNullOrEmpty(Model.Produto.ImagemUrl3)) images.Add(Model.Produto.ImagemUrl3);
+    if (!string.IsNullOrEmpty(Model.Produto.ImagemUrl4)) images.Add(Model.Produto.ImagemUrl4);
+
+    images = images
+        .Where(i => !string.IsNullOrWhiteSpace(i))
+        .Select(i => i.Trim())
+        .GroupBy(i => i.Split('/', '\\').Last())
+        .Select(g => g.First())
+        .ToList();
+
+    if (!images.Any()) images.Add("https://via.placeholder.com/800x800");
+
+    var unicoVariant = Model.VariantesOrdenadas.FirstOrDefault(v => 
+        v.Tamanho != null && (
+        v.Tamanho.Trim().Equals("Unico", StringComparison.OrdinalIgnoreCase) || 
+        v.Tamanho.Trim().Equals("Único", StringComparison.OrdinalIgnoreCase)));
+        
+    bool isSingleUnico = (Model.VariantesOrdenadas.Count == 1 && unicoVariant != null) || 
+                         (Model.Produto.Tamanho != null && (
+                             Model.Produto.Tamanho.Contains("Unico", StringComparison.OrdinalIgnoreCase) || 
+                             Model.Produto.Tamanho.Contains("Único", StringComparison.OrdinalIgnoreCase)
+                         )) ||
+                         (Model.Produto.Categoria != null && Model.Produto.Categoria.Equals("Acessórios", StringComparison.OrdinalIgnoreCase));
+
+    // Fallback: se isSingleUnico for true, mas unicoVariant for null, pegamos o primeiro disponível
+    if (isSingleUnico && unicoVariant == null && Model.VariantesOrdenadas.Any())
+    {
+        unicoVariant = Model.VariantesOrdenadas.First();
+    }
+}
+
+<style>
+    .product-image-container {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        overflow: hidden;
+        cursor: crosshair; /* Cursor muda para indicar precisão */
+        transition: opacity 0.3s ease;
+        position: relative;
+    }
+    .product-image-container img {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+        display: block;
+        transition: transform 0.3s ease; /* Suavidade ao entrar/sair do zoom */
+        transform-origin: center center;
+        will-change: transform; /* Otimização de performance */
+    }
+    
+    /* Nike-style grid for images */
+    .image-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+
+    .image-grid.single-image {
+        display: flex;
+        justify-content: center;
+    }
+
+    .image-grid.single-image .product-image-container {
+        max-width: 500px;
+        width: 100%;
+        box-shadow: 0 18px 45px rgba(15, 23, 42, 0.15);
+    }
+    
+    @@media (max-width: 768px) {
+        .image-grid {
+            grid-template-columns: 1fr; /* Stack on mobile */
+        }
+    }
+
+    .size-btn {
+        width: 100%;
+        height: 50px;
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+        background: transparent;
+        color: #212529;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+        position: relative;
+    }
+    
+    .size-btn:hover:not(:disabled) {
+        border-color: #000;
+    }
+
+    .size-btn.selected {
+        border-color: #000;
+        background-color: #000;
+        color: #fff;
+    }
+
+    .size-btn:disabled {
+        background-color: #e9ecef;
+        color: #adb5bd;
+        cursor: not-allowed;
+        border-color: #dee2e6;
+        /* Diagonal line from top-left to bottom-right */
+        background-image: linear-gradient(to bottom right, transparent calc(50% - 1px), #adb5bd calc(50% - 1px), #adb5bd calc(50% + 1px), transparent calc(50% + 1px));
+    }
+
+    .size-grid-selector {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+    }
+
+    .btn-add-cart {
+        background-color: #000;
+        color: #fff;
+        border-radius: 30px;
+        padding: 18px 24px;
+        font-weight: 700;
+        width: 100%;
+        transition: background-color 0.2s;
+        border: none;
+    }
+
+    .btn-add-cart:hover {
+        background-color: #333;
+        color: #fff;
+    }
+
+    .btn-add-cart:disabled {
+        background-color: #e9ecef;
+        color: #adb5bd;
+        cursor: not-allowed;
+    }
+
+    .btn-favorite {
+        border-radius: 30px;
+        padding: 18px 24px;
+        font-weight: 600;
+        width: 100%;
+        border: 1px solid #dee2e6;
+        color: #212529;
+        background: transparent;
+        transition: all 0.2s;
+    }
+    
+    .btn-favorite:hover {
+        border-color: #000;
+        background-color: #f8f9fa;
+        color: #000;
+    }
+
+    /* Sticky Sidebar */
+    .product-info-sidebar {
+        position: -webkit-sticky;
+        position: sticky;
+        top: 2rem;
+    }
+    
+    .description-box {
+        margin-top: 2rem;
+        font-size: 1.1rem;
+        line-height: 1.6;
+        color: #495057;
+    }
+    
+    .accordion-item {
+        background-color: transparent;
+        border: 1px solid #dee2e6;
+    }
+    .accordion-button {
+        background-color: transparent;
+        color: #212529;
+    }
+    .accordion-button:not(.collapsed) {
+        background-color: #f8f9fa;
+        color: #000;
+        box-shadow: none;
+    }
+    .accordion-button:focus {
+        box-shadow: none;
+        border-color: #dee2e6;
+    }
+    .accordion-body {
+        color: #495057;
+    }
+</style>
+
+<div class="container py-5">
+    <div class="row">
+        <!-- Coluna da Imagem (Esquerda, Maior) -->
+        <div class="col-lg-7 col-md-6 mb-4">
+            <div class="image-grid @(images.Count == 4 ? "" : "single-image")">
+                @if (images.Count == 4)
+                {
+                    foreach (var img in images)
+                    {
+                        <div class="product-image-container">
+                            <img src="@img" alt="@Model.Produto.Nome" class="img-fluid">
+                        </div>
+                    }
+                }
+                else
+                {
+                    var firstImage = images.First();
+                    <div class="product-image-container">
+                        <img src="@firstImage" alt="@Model.Produto.Nome" class="img-fluid">
+                    </div>
+                }
+            </div>
+            
+            <!-- Descrição (Desktop - abaixo das fotos para leitura fluida estilo blog/review) -->
+            <div class="d-none d-md-block mt-5">
+                <h3 class="description-title">Descrição</h3>
+                <div class="description-box">
+                    @Html.Raw(Model.Produto.Descricao?.Replace("\n", "<br>") ?? "Sem descrição.")
+                </div>
+            </div>
+        </div>
+
+        <!-- Coluna de Informações (Direita, Sticky) -->
+        <div class="col-lg-5 col-md-6">
+            <div class="product-info-sidebar ps-lg-4">
+                <h1 class="fw-bold mb-2">@Model.Produto.Nome</h1>
+                <p class="mb-3 text-muted">@Model.Produto.Categoria</p>
+                
+                <div class="mb-4">
+                    <h3 class="fw-bold" id="displayPrice">@Model.Produto.Preco.ToString("C")</h3>
+                    @if (Model.Produto.ValorFreteFixo.HasValue)
+                    {
+                         <span class="badge bg-light text-dark border">Frete Fixo: @Model.Produto.ValorFreteFixo.Value.ToString("C")</span>
+                    }
+                </div>
+
+                @if (!string.IsNullOrEmpty(Model.Produto.CupomCodigo))
+                {
+                    <div class="alert alert-light border mb-4">
+                        <small class="text-success fw-bold">OFERTA ESPECIAL</small><br>
+                        Use o cupom <strong>@Model.Produto.CupomCodigo</strong> para desconto.
+                    </div>
+                }
+
+                <!-- Seleção de Tamanho -->
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <label class="fw-bold">Tamanho e numeração</label>
+                        <a href="#" class="text-decoration-underline small text-dark" data-bs-toggle="modal" data-bs-target="#sizeGuideModal">Tabela de medidas</a>
+                    </div>
+                    
+                    <div class="size-grid-selector" id="sizeSelector">
+                        @foreach (var variante in Model.VariantesOrdenadas)
+                        {
+                            <button type="button" 
+                                    class="size-btn @(variante.Estoque <= 0 ? "" : "")" 
+                                    data-id="@variante.Id"
+                                    data-price="@variante.Preco"
+                                    data-stock="@variante.Estoque"
+                                    data-img1="@variante.ImagemUrl"
+                                    data-img2="@variante.ImagemUrl2"
+                                    data-img3="@variante.ImagemUrl3"
+                                    data-img4="@variante.ImagemUrl4"
+                                    @(variante.Estoque <= 0 ? "disabled" : "")>
+                                @variante.Tamanho
+                            </button>
+                        }
+                    </div>
+                    <div id="stockMessage" class="mt-2 small text-danger" style="height: 20px;"></div>
+                </div>
+
+                <!-- Botões de Ação -->
+                <div class="d-grid gap-3">
+                    <form asp-controller="Carrinho" asp-action="Adicionar" method="get" id="addToCartForm">
+                        <input type="hidden" name="id" id="selectedProductId" value="@(isSingleUnico ? unicoVariant?.Id : "")" />
+                        <button type="submit" class="btn btn-add-cart" id="addToCartBtn" @((isSingleUnico && unicoVariant?.Estoque > 0) ? "" : "disabled")>
+                            @(unicoVariant?.Estoque <= 0 && isSingleUnico ? "Esgotado" : "Adicionar ao Carrinho")
+                        </button>
+                    </form>
+                    
+                    <a asp-controller="Favoritos" asp-action="Toggle" 
+                       asp-route-produtoId="@Model.Produto.Id" 
+                       class="btn btn-favorite text-center text-decoration-none">
+                        Favoritar <i class="far fa-heart ms-2"></i>
+                    </a>
+                </div>
+
+                <div class="mt-5 d-md-none">
+                    <p class="lead text-muted">@Model.Produto.Descricao</p>
+                </div>
+                
+
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Seção de Avaliações -->
+    @if (Model.Avaliacoes != null && Model.Avaliacoes.Any())
+    {
+        <div class="row mt-5">
+            <div class="col-12">
+                <hr class="mb-5">
+                <h3 class="fw-bold mb-4">Comentários sobre o Produto</h3>
+                <div class="row g-4">
+                    @foreach (var avaliacao in Model.Avaliacoes)
+                    {
+                        <div class="col-md-6 col-lg-3">
+                            <div class="card h-100 border-0 shadow-sm">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <div class="text-warning small">
+                                            @for (int i = 1; i <= 5; i++)
+                                            {
+                                                if (i <= Math.Clamp(avaliacao.Nota, 0, 5))
+                                                {
+                                                    <i class="fa-solid fa-star"></i>
+                                                }
+                                                else
+                                                {
+                                                    <i class="fa-regular fa-star"></i>
+                                                }
+                                            }
+                                        </div>
+                                        <div class="text-end">
+                                            <div class="small fw-semibold text-dark">Nota @avaliacao.Nota/10</div>
+                                            <small class="text-muted">@avaliacao.DataAvaliacao.ToString("dd/MM/yyyy")</small>
+                                        </div>
+                                    </div>
+                                    
+                                    @if (!string.IsNullOrEmpty(avaliacao.Comentario))
+                                    {
+                                        <p class="card-text small mb-2">@avaliacao.Comentario</p>
+                                    }
+
+                                    @if (!string.IsNullOrEmpty(avaliacao.ImagemUrl))
+                                    {
+                                        <div class="mt-2">
+                                            <a href="@avaliacao.ImagemUrl" target="_blank">
+                                                <img src="@avaliacao.ImagemUrl" alt="Foto" class="img-fluid rounded" style="height: 100px; object-fit: cover;">
+                                            </a>
+                                        </div>
+                                    }
+                                    
+                                    <div class="mt-2 pt-2 border-top">
+                                        <small class="fw-bold text-muted">@avaliacao.Usuario?.Nome</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@if (!isSingleUnico)
+{
+<!-- Modal Tabela de Medidas -->
+<div class="modal fade" id="sizeGuideModal" tabindex="-1" aria-labelledby="sizeGuideModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-white text-dark border-0 shadow">
+      <div class="modal-header border-bottom">
+        <h5 class="modal-title" id="sizeGuideModalLabel">Tabela de Medidas</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p class="small text-muted mb-3">Use esta tabela como referência para escolher o tamanho ideal.</p>
+        
+        @if (Model.Produto.Categoria != null && (
+             Model.Produto.Categoria.Contains("Tênis", StringComparison.OrdinalIgnoreCase) || 
+             Model.Produto.Categoria.Contains("Sapato", StringComparison.OrdinalIgnoreCase) || 
+             Model.Produto.Categoria.Contains("Calçado", StringComparison.OrdinalIgnoreCase)))
+        {
+            <table class="table table-striped table-sm text-center border-secondary">
+                <thead>
+                    <tr>
+                        <th>BR</th>
+                        <th>US</th>
+                        <th>CM</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>34</td><td>4</td><td>22.5</td></tr>
+                    <tr><td>35</td><td>4.5</td><td>23.0</td></tr>
+                    <tr><td>36</td><td>5.5</td><td>23.5</td></tr>
+                    <tr><td>37</td><td>6</td><td>24.0</td></tr>
+                    <tr><td>38</td><td>7</td><td>25.0</td></tr>
+                    <tr><td>39</td><td>7.5</td><td>25.5</td></tr>
+                    <tr><td>40</td><td>8.5</td><td>26.5</td></tr>
+                    <tr><td>41</td><td>9.5</td><td>27.5</td></tr>
+                    <tr><td>42</td><td>10</td><td>28.0</td></tr>
+                    <tr><td>43</td><td>11</td><td>29.0</td></tr>
+                    <tr><td>44</td><td>12</td><td>30.0</td></tr>
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <!-- Tabela Padrão para Roupas (Camisas, Casacos, etc) -->
+            <table class="table table-striped table-sm text-center border-secondary">
+                <thead>
+                    <tr>
+                        <th>Tamanho</th>
+                        <th>Tórax (cm)</th>
+                        <th>Comprimento (cm)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>P</td><td>50 - 52</td><td>68 - 70</td></tr>
+                    <tr><td>M</td><td>52 - 54</td><td>70 - 72</td></tr>
+                    <tr><td>G</td><td>54 - 56</td><td>72 - 74</td></tr>
+                    <tr><td>GG</td><td>56 - 58</td><td>74 - 76</td></tr>
+                    <tr><td>XG</td><td>58 - 62</td><td>76 - 80</td></tr>
+                </tbody>
+            </table>
+        }
+      </div>
+    </div>
+  </div>
+</div>
+}
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sizeBtns = document.querySelectorAll('.size-btn');
+            const addToCartBtn = document.getElementById('addToCartBtn');
+            const selectedInput = document.getElementById('selectedProductId');
+            const priceDisplay = document.getElementById('displayPrice');
+            const stockMsg = document.getElementById('stockMessage');
+
+            // Função para ativar o Zoom nas imagens
+            function enableZoom() {
+                const containers = document.querySelectorAll('.product-image-container');
+                
+                containers.forEach(container => {
+                    const img = container.querySelector('img');
+                    
+                    // Remove listeners antigos para evitar duplicação (caso seja rechamado)
+                    // Como estamos criando funções anônimas novas, o removeEventListener não funcionaria bem sem referência.
+                    // Mas como o innerHTML é recriado na troca de tamanho, os listeners antigos morrem com os elementos antigos.
+                    // Para o carregamento inicial, ok.
+
+                    container.addEventListener('mousemove', function(e) {
+                        const { left, top, width, height } = container.getBoundingClientRect();
+                        
+                        // Calcula posição do mouse em % (0 a 100)
+                        const x = ((e.clientX - left) / width) * 100;
+                        const y = ((e.clientY - top) / height) * 100;
+                        
+                        // Desativa transição durante o movimento para resposta instantânea
+                        img.style.transition = 'none';
+                        
+                        // Define o ponto de origem do zoom onde o mouse está
+                        img.style.transformOrigin = `${x}% ${y}%`;
+                        
+                        // Aplica o Zoom (2.5x)
+                        img.style.transform = "scale(2.5)";
+                    });
+
+                    container.addEventListener('mouseleave', function() {
+                        // Reativa a transição para voltar suavemente
+                        img.style.transition = 'transform 0.3s ease';
+                        img.style.transform = "scale(1)";
+                        
+                        // Opcional: Reseta a origem após a animação terminar
+                        setTimeout(() => {
+                            if(img.style.transform === "scale(1)") {
+                                img.style.transformOrigin = "center center";
+                            }
+                        }, 300);
+                    });
+                });
+            }
+
+            // Ativa zoom nas imagens iniciais
+            enableZoom();
+
+            sizeBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Remove selected class from all
+                    sizeBtns.forEach(b => b.classList.remove('selected'));
+                    
+                    // Add to clicked
+                    this.classList.add('selected');
+                    
+                    // Update hidden input
+                    const id = this.getAttribute('data-id');
+                    selectedInput.value = id;
+
+                    // Update Images Grid (Nike Style)
+                    const img1 = this.getAttribute('data-img1');
+                    const img2 = this.getAttribute('data-img2');
+                    const img3 = this.getAttribute('data-img3');
+                    const img4 = this.getAttribute('data-img4');
+                    
+                    const images = [];
+                    if (img1) images.push(img1);
+                    if (img2) images.push(img2);
+                    if (img3) images.push(img3);
+                    if (img4) images.push(img4);
+
+                    const seenFiles = new Set();
+                    const uniqueImages = [];
+
+                    images.filter(Boolean).forEach(url => {
+                        const parts = url.split(/[\/\\]/);
+                        const file = parts[parts.length - 1];
+                        if (!seenFiles.has(file)) {
+                            seenFiles.add(file);
+                            uniqueImages.push(url);
+                        }
+                    });
+
+                    if (uniqueImages.length > 0) {
+                        const grid = document.querySelector('.image-grid');
+                        if (!grid) return;
+
+                        grid.innerHTML = ''; // Clear current
+                        
+                        if (uniqueImages.length === 4) {
+                            grid.classList.remove('single-image');
+
+                            uniqueImages.forEach(img => {
+                                const div = document.createElement('div');
+                                div.className = 'product-image-container';
+                                div.innerHTML = `<img src="${img}" alt="Imagem do Produto" class="img-fluid">`;
+                                grid.appendChild(div);
+                            });
+                        } else {
+                            grid.classList.add('single-image');
+
+                            const img = uniqueImages[0];
+                            const div = document.createElement('div');
+                            div.className = 'product-image-container';
+                            div.innerHTML = `<img src="${img}" alt="Imagem do Produto" class="img-fluid">`;
+                            grid.appendChild(div);
+                        }
+                        
+                        // Reativa o zoom para as novas imagens
+                        enableZoom();
+                    }
+                    
+                    // Update Price (optional, if variants differ)
+                    const price = parseFloat(this.getAttribute('data-price')).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                    // priceDisplay.innerText = price; // Uncomment if price varies by size
+                    
+                    // Enable Add to Cart
+                    addToCartBtn.disabled = false;
+                    addToCartBtn.innerText = "Adicionar ao Carrinho";
+                    
+                    // Stock Msg
+                    const stock = parseInt(this.getAttribute('data-stock'));
+                    if (stock < 5) {
+                        stockMsg.innerText = `Apenas ${stock} unidades restantes!`;
+                        stockMsg.className = "mt-2 small text-warning fw-bold";
+                    } else {
+                        stockMsg.innerText = "";
+                    }
+                });
+            });
+
+            // Prevent submit if no size selected
+            document.getElementById('addToCartForm').addEventListener('submit', function(e) {
+                if (!selectedInput.value) {
+                    e.preventDefault();
+                    stockMsg.innerText = "Por favor, selecione um tamanho.";
+                    stockMsg.className = "mt-2 small text-danger fw-bold";
+                }
+            });
+        });
+    </script>
+}

@@ -1,0 +1,74 @@
+@model CatalogViewModel
+
+@{
+    var catName = Model.Categorias.FirstOrDefault(c => c.Id == Model.CategoriaSelecionadaId)?.Nome ?? "Produtos";
+    ViewData["Title"] = catName;
+}
+
+<div class="container my-4">
+    <!-- Header com Voltar e Título -->
+    <div class="d-flex align-items-center mb-5 border-bottom pb-3">
+        <a href="/Home/Catalog" class="text-muted me-4 text-decoration-none d-flex align-items-center">
+            <i class="bi bi-arrow-left me-2"></i> Voltar
+        </a>
+        <h1 class="text-dark m-0 display-6 fw-bold">@catName</h1>
+    </div>
+
+    <!-- Filtros -->
+    <div class="card mb-5 border-0 shadow-sm">
+        <div class="card-body">
+            <form method="get" class="row g-3 align-items-end" id="filterForm">
+                <!-- Search -->
+                <div class="col-md-5">
+                    <label class="form-label text-muted small">Buscar</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-white text-muted"><i class="bi bi-search"></i></span>
+                        <input type="text" name="busca" class="form-control bg-white text-dark" 
+                               placeholder="O que você procura?" value="@Model.Busca" />
+                    </div>
+                </div>
+                
+                <!-- Size -->
+                <div class="col-md-3">
+                     <label class="form-label text-muted small">Tamanho</label>
+                     <select name="tamanhoId" class="form-select bg-white text-dark" onchange="this.form.submit()">
+                        <option value="">Todos</option>
+                        @foreach (var t in Model.Tamanhos)
+                        {
+                            <option value="@t.Id" selected="@(t.Id == Model.TamanhoSelecionadoId)">@t.Nome</option>
+                        }
+                    </select>
+                </div>
+
+                <!-- Order -->
+                <div class="col-md-3">
+                    <label class="form-label text-muted small">Ordenação</label>
+                    <select name="ordem" class="form-select bg-white text-dark" onchange="this.form.submit()">
+                        <option value="">Padrão</option>
+                        <option value="menor_preco" selected="@(Model.Ordem == "menor_preco")">Menor Preço</option>
+                        <option value="maior_preco" selected="@(Model.Ordem == "maior_preco")">Maior Preço</option>
+                        <option value="nome" selected="@(Model.Ordem == "nome")">Nome (A-Z)</option>
+                    </select>
+                </div>
+
+                <div class="col-md-1">
+                     <button type="submit" class="btn btn-dark w-100"><i class="bi bi-filter"></i></button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Grid de Produtos -->
+    @if (!Model.Produtos.Any())
+    {
+        <div class="text-center py-5">
+            <i class="bi bi-box-seam text-muted" style="font-size: 3rem;"></i>
+            <p class="text-muted mt-3">Nenhum produto encontrado nesta categoria.</p>
+            <a href="/Home/Catalog" class="btn btn-outline-dark mt-2">Ver outras categorias</a>
+        </div>
+    }
+    else
+    {
+        @await Html.PartialAsync("_CatalogSection", Model.Produtos)
+    }
+</div>
