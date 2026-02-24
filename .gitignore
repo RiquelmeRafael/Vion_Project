@@ -1,0 +1,37 @@
+
+# =========================
+# Visual Studio / .NET
+# =========================
+
+# User-specific files
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Build results
+bin/
+obj/
+
+# Rider / VS Code
+.idea/
+.vscode/
+
+# Test results
+TestResults/
+
+# NuGet
+packages/
+*.nupkg
+*.snupkg
+
+# Publish output
+publish/
+
+# Logs
+*.log
+
+# OS generated files
+.DS_Store
+Thumbs.db

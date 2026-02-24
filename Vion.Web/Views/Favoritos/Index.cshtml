@@ -1,0 +1,150 @@
+@model IEnumerable<Vion.Domain.Entities.Produto>
+
+@{
+    ViewData["Title"] = "Favoritos";
+}
+
+<style>
+    .favorite-card {
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        transition: transform 0.2s, box-shadow 0.2s;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        border: 1px solid #eee;
+    }
+    .favorite-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+    .favorite-img-wrapper {
+        position: relative;
+        width: 100%;
+        padding-top: 100%; /* 1:1 Aspect Ratio for consistency */
+        overflow: hidden;
+        background-color: #f8f9fa;
+    }
+    .favorite-img-wrapper img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* Ensures image fills the square nicely */
+        transition: transform 0.3s ease;
+    }
+    .favorite-card:hover .favorite-img-wrapper img {
+        transform: scale(1.05);
+    }
+    .favorite-info {
+        padding: 1.25rem;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+    .favorite-title {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+        color: #2c3e50;
+        line-height: 1.4;
+        
+        /* Truncate text after 2 lines */
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    .favorite-category {
+        font-size: 0.85rem;
+        color: #95a5a6;
+        margin-bottom: 0.75rem;
+    }
+    .favorite-price {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 1rem;
+    }
+    .favorite-actions {
+        margin-top: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    .btn-favorite-action {
+        width: 100%;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        padding: 0.5rem;
+        font-weight: 500;
+    }
+</style>
+
+<div class="container py-5">
+    <div class="favorites-header mb-4">
+        <h2 class="fw-bold">Favoritos</h2>
+        <p class="text-muted">Gerencie sua lista de desejos</p>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="text-center py-5">
+            <h4 class="mb-3">Você ainda não tem favoritos.</h4>
+            <p class="text-muted mb-4">Itens adicionados aos seus favoritos aparecerão aqui.</p>
+            <a asp-controller="Home" asp-action="Index" class="btn btn-light rounded-pill px-5 fw-bold">
+                Junte-se a nós
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 mb-5">
+            @foreach (var produto in Model)
+            {
+                <div class="col">
+                    <div class="favorite-card">
+                        <div class="favorite-img-wrapper position-relative">
+                            <img src="@produto.ImagemUrl" alt="@produto.Nome">
+                            <!-- Heart icon absolute top right -->
+                            <form asp-action="Remover" method="post" class="position-absolute top-0 end-0 m-2">
+                                <input type="hidden" name="produtoId" value="@produto.Id" />
+                                <button type="submit" class="btn btn-link p-0 text-dark" title="Remover">
+                                    <i class="fas fa-heart text-dark fs-5"></i>
+                                </button>
+                            </form>
+                        </div>
+                        
+                        <div class="favorite-info">
+                            <h5 class="favorite-title" title="@produto.Nome">@produto.Nome</h5>
+                            <p class="favorite-category">@(produto.Categoria?.Nome ?? "Casual")</p>
+                            <p class="favorite-price">@produto.Preco.ToString("C")</p>
+                            
+                            <div class="favorite-actions mt-3">
+                                <a asp-controller="Home" asp-action="Details" asp-route-id="@produto.Id" class="btn btn-primary btn-favorite-action">
+                                    Ver Detalhes
+                                </a>
+                                
+                                <form asp-action="Remover" method="post" class="w-100">
+                                    <input type="hidden" name="produtoId" value="@produto.Id" />
+                                    <button type="submit" class="btn btn-outline-danger btn-favorite-action">
+                                        Remover
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        
+        <div class="d-flex justify-content-center mt-4">
+            <a asp-controller="Home" asp-action="Index" class="btn btn-light rounded-pill px-4 py-2 fw-bold">
+                Continuar Comprando
+            </a>
+        </div>
+    }
+</div>

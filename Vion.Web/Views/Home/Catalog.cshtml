@@ -1,0 +1,62 @@
+@model CatalogViewModel
+
+<h1>Produtos</h1>
+
+<form method="get" class="row g-3 mb-4" id="filterForm">
+    <div class="col-md-3">
+        <input type="text"
+               name="busca"
+               class="form-control"
+               placeholder="Buscar produtos..."
+               value="@Model.Busca" />
+    </div>
+
+    <div class="col-md-3">
+        <select name="categoriaId"
+                class="form-select"
+                onchange="this.form.submit()">
+            <option value="">Todas categorias</option>
+            @foreach (var c in Model.Categorias)
+            {
+                <option value="@c.Id"
+                        selected="@(c.Id == Model.CategoriaSelecionadaId)">
+                    @c.Nome
+                </option>
+            }
+        </select>
+    </div>
+
+    <div class="col-md-3">
+        <select name="tamanhoId"
+                class="form-select"
+                onchange="this.form.submit()">
+            <option value="">Todos tamanhos</option>
+            @foreach (var t in Model.Tamanhos)
+            {
+                <option value="@t.Id"
+                        selected="@(t.Id == Model.TamanhoSelecionadoId)">
+                    @t.Nome
+                </option>
+            }
+        </select>
+    </div>
+
+    <div class="col-md-3">
+        <select name="ordem"
+                class="form-select"
+                onchange="this.form.submit()">
+            <option value="">Ordenar por...</option>
+            <option value="menor_preco" selected="@(Model.Ordem == "menor_preco")">
+                Menor Preço
+            </option>
+            <option value="maior_preco" selected="@(Model.Ordem == "maior_preco")">
+                Maior Preço
+            </option>
+            <option value="nome" selected="@(Model.Ordem == "nome")">
+                Nome (A-Z)
+            </option>
+        </select>
+    </div>
+</form>
+
+@await Html.PartialAsync("_CatalogSection", Model.Produtos)

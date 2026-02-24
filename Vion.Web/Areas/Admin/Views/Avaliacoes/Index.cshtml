@@ -1,0 +1,87 @@
+@model IEnumerable<Vion.Domain.Entities.Avaliacao>
+
+@{
+    ViewData["Title"] = "Avaliações de Produtos";
+}
+
+<div class="admin-container">
+    <div class="admin-header">
+        <h1 class="admin-title">Avaliações de Produtos</h1>
+        <p class="text-muted mb-0">Gerencie comentários e notas enviados pelos clientes.</p>
+    </div>
+
+    <div class="admin-card">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table admin-table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th>Produto</th>
+                            <th>Cliente</th>
+                            <th>Nota</th>
+                            <th>Comentário</th>
+                            <th>Data</th>
+                            <th class="text-end">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="text-dark">
+                                    <div class="d-flex align-items-center">
+                                        @if (!string.IsNullOrEmpty(item.Produto?.ImagemUrl))
+                                        {
+                                            <img src="@item.Produto.ImagemUrl"
+                                                 alt="@item.Produto.Nome"
+                                                 class="rounded me-2"
+                                                 style="width: 48px; height: 48px; object-fit: cover;" />
+                                        }
+                                        <div>
+                                            <div class="fw-bold">@item.Produto?.Nome</div>
+                                            <small class="text-muted">ID: @item.ProdutoId</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="text-dark">
+                                    <div class="fw-semibold">@item.Usuario?.Nome</div>
+                                    <small class="text-muted">@item.Usuario?.Email</small>
+                                </td>
+                                <td>
+                                    <span class="badge bg-warning text-dark px-3 py-2">
+                                        @item.Nota ★
+                                    </span>
+                                </td>
+                                <td style="max-width: 320px;">
+                                    @if (!string.IsNullOrWhiteSpace(item.Comentario))
+                                    {
+                                        <span class="text-muted">@item.Comentario</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted fst-italic">Sem comentário escrito.</span>
+                                    }
+                                </td>
+                                <td class="text-muted">
+                                    @item.DataAvaliacao.ToLocalTime().ToString("dd/MM/yyyy HH:mm")
+                                </td>
+                                <td class="text-end">
+                                    <form asp-action="Delete" method="post" class="d-inline">
+                                        <input type="hidden" name="id" value="@item.Id" />
+                                        <button type="submit"
+                                                class="btn-action btn-action-delete"
+                                                title="Apagar Avaliação"
+                                                onclick="return confirm('Tem certeza que deseja apagar esta avaliação?');">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,8 @@
+# Ignore library files and static assets from language stats
+Vion.Web/wwwroot/lib/** linguist-vendored
+Vion.Web/wwwroot/css/** linguist-vendored
+Vion.Web/wwwroot/js/** linguist-vendored
+Vion.Web/wwwroot/images/** linguist-vendored
+
+# Treat Razor files as C# (to boost C# stats)
+*.cshtml linguist-language=C#

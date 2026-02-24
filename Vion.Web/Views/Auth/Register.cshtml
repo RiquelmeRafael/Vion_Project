@@ -1,0 +1,88 @@
+@model Vion.Web.Models.RegisterVm
+
+@{
+    ViewData["Title"] = "Criar conta";
+    Layout = "_Layout";
+}
+
+<div class="container d-flex align-items-center justify-content-center min-vh-100 py-5">
+    <div class="w-100" style="max-width: 480px;">
+        
+        <div class="text-center mb-5">
+            <!-- Logo Opcional -->
+            <h2 class="fw-bold mb-3 text-dark">Agora, vamos fazer de você um Membro Vion.</h2>
+            <p class="text-muted">Crie sua conta para ter acesso a ofertas exclusivas.</p>
+        </div>
+
+        <form asp-action="Register" asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3 text-center"></div>
+
+            <div class="form-floating mb-3">
+                <input asp-for="Nome" class="form-control rounded-3" placeholder="Nome" />
+                <label asp-for="Nome" class="text-muted">Nome Completo</label>
+                <span asp-validation-for="Nome" class="text-danger small"></span>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input asp-for="Email" class="form-control rounded-3" placeholder=" " />
+                <label asp-for="Email" class="text-muted">Endereço de e-mail</label>
+                <span asp-validation-for="Email" class="text-danger small"></span>
+            </div>
+
+            <div class="input-group mb-3">
+                <div class="form-floating flex-grow-1">
+                    <input asp-for="Senha" type="password" class="form-control rounded-start-3" id="inputSenha" placeholder="Senha" style="border-right: none;" />
+                    <label asp-for="Senha" class="text-muted">Senha</label>
+                </div>
+                <span class="input-group-text bg-white border-start-0 rounded-end-3" style="cursor: pointer;" onclick="togglePassword('inputSenha', 'iconSenha')">
+                    <i class="bi bi-eye" id="iconSenha"></i>
+                </span>
+            </div>
+            <div class="mb-3"><span asp-validation-for="Senha" class="text-danger small"></span></div>
+
+            <div class="input-group mb-4">
+                <div class="form-floating flex-grow-1">
+                    <input asp-for="ConfirmarSenha" type="password" class="form-control rounded-start-3" id="inputConfirmarSenha" placeholder="Confirmar Senha" style="border-right: none;" />
+                    <label asp-for="ConfirmarSenha" class="text-muted">Confirmar Senha</label>
+                </div>
+                <span class="input-group-text bg-white border-start-0 rounded-end-3" style="cursor: pointer;" onclick="togglePassword('inputConfirmarSenha', 'iconConfirmarSenha')">
+                    <i class="bi bi-eye" id="iconConfirmarSenha"></i>
+                </span>
+            </div>
+            <div class="mb-4"><span asp-validation-for="ConfirmarSenha" class="text-danger small"></span></div>
+
+            <div class="mb-4 text-muted small text-center">
+                Ao criar uma conta, você concorda com a <a href="#" class="text-decoration-underline text-dark">Política de Privacidade</a> e os <a href="#" class="text-decoration-underline text-dark">Termos de Uso</a> da Vion.
+            </div>
+
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-dark rounded-pill py-3 fw-bold fs-5">Criar conta</button>
+            </div>
+
+            <div class="text-center mt-4">
+                <span class="text-muted">Já é um membro?</span> 
+                <a asp-action="Login" asp-route-returnUrl="@ViewData["ReturnUrl"]" class="text-dark fw-bold text-decoration-none">Entrar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        function togglePassword(inputId, iconId) {
+            var input = document.getElementById(inputId);
+            var icon = document.getElementById(iconId);
+            
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove("bi-eye");
+                icon.classList.add("bi-eye-slash");
+            } else {
+                input.type = "password";
+                icon.classList.remove("bi-eye-slash");
+                icon.classList.add("bi-eye");
+            }
+        }
+    </script>
+}

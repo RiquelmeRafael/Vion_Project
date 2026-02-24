@@ -1,0 +1,81 @@
+@model IEnumerable<Vion.Domain.Entities.Usuario>
+
+@{
+    ViewData["Title"] = "Gerenciar Usuários";
+}
+
+<div class="admin-container">
+    <div class="admin-header">
+        <h1 class="admin-title">Gerenciar Usuários</h1>
+        <a asp-action="Create" class="btn-admin-create">
+            <i class="fa-solid fa-plus"></i> Novo Usuário
+        </a>
+    </div>
+
+    <div class="admin-card">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table admin-table table-hover" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Email</th>
+                            <th>Tipo</th>
+                            <th>Status</th>
+                            <th class="text-end">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            var isLocked = item.LockoutEnd != null && item.LockoutEnd > DateTimeOffset.UtcNow;
+                            <tr>
+                                <td class="@(isLocked ? "text-muted" : "text-dark") fw-bold">
+                                    @Html.DisplayFor(modelItem => item.Nome)
+                                </td>
+                                <td class="@(isLocked ? "text-muted" : "text-dark")">
+                                    @Html.DisplayFor(modelItem => item.Email)
+                                </td>
+                                <td class="@(isLocked ? "text-muted" : "text-dark")">
+                                    <span class="badge bg-dark border border-secondary">
+                                        @Html.DisplayFor(modelItem => item.TipoUsuario.Nome)
+                                    </span>
+                                </td>
+                                <td>
+                                    @if (isLocked)
+                                    {
+                                        <span class="badge bg-secondary">Inativo</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-success">Ativo</span>
+                                    }
+                                </td>
+                                <td class="text-end">
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn-action btn-action-edit" title="Editar">
+                                        <i class="fa-solid fa-pen"></i>
+                                    </a>
+                                    
+                                    @if (isLocked)
+                                    {
+                                        <form asp-action="Reativar" asp-route-id="@item.Id" method="post" class="d-inline" onsubmit="return confirm('Deseja reativar este usuário?');">
+                                            <button type="submit" class="btn-action btn-action-success" title="Reativar">
+                                                <i class="fa-solid fa-check"></i>
+                                            </button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn-action btn-action-delete" title="Desativar">
+                                            <i class="fa-solid fa-ban"></i>
+                                        </a>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

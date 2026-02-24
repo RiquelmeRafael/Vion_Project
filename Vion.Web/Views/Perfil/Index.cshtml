@@ -1,0 +1,124 @@
+@model Vion.Web.Models.ViewModels.PerfilIndexViewModel
+
+@{
+    ViewData["Title"] = "Minha Conta";
+}
+
+<div class="container py-5">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="fw-bold">Minha Conta</h2>
+            <p class="text-muted">Gerencie suas informações pessoais e segurança.</p>
+        </div>
+    </div>
+
+    @if (TempData["Sucesso"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i> @TempData["Sucesso"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="row g-4">
+        <!-- Dados Pessoais -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-white border-bottom-0 pt-4 px-4">
+                    <h5 class="card-title fw-bold mb-0">
+                        <i class="bi bi-person-lines-fill me-2 text-primary"></i>Dados Pessoais
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="AtualizarDados" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="Dados.Nome" class="form-label fw-semibold"></label>
+                            <input asp-for="Dados.Nome" class="form-control" />
+                            <span asp-validation-for="Dados.Nome" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Dados.Email" class="form-label fw-semibold"></label>
+                            <input asp-for="Dados.Email" class="form-control" />
+                            <span asp-validation-for="Dados.Email" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Dados.Telefone" class="form-label fw-semibold"></label>
+                            <input asp-for="Dados.Telefone" class="form-control" placeholder="(00) 00000-0000" />
+                            <span asp-validation-for="Dados.Telefone" class="text-danger small"></span>
+                        </div>
+
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-dark">
+                                Salvar Alterações
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Segurança -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-white border-bottom-0 pt-4 px-4">
+                    <h5 class="card-title fw-bold mb-0">
+                        <i class="bi bi-shield-lock-fill me-2 text-primary"></i>Alterar Senha
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="AlterarSenha" method="post">
+                        <!-- Validation summary for password specific errors -->
+                        @if (!ViewData.ModelState.IsValid && ViewData.ModelState.Keys.Any(k => k.StartsWith("Senha")))
+                        {
+                            <div class="text-danger mb-3">
+                                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                                {
+                                    <p class="mb-0">@error.ErrorMessage</p>
+                                }
+                            </div>
+                        }
+
+                        <div class="mb-3">
+                            <label asp-for="Senha.SenhaAtual" class="form-label fw-semibold"></label>
+                            <input asp-for="Senha.SenhaAtual" class="form-control" />
+                            <span asp-validation-for="Senha.SenhaAtual" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Senha.NovaSenha" class="form-label fw-semibold"></label>
+                            <input asp-for="Senha.NovaSenha" class="form-control" />
+                            <span asp-validation-for="Senha.NovaSenha" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Senha.ConfirmarNovaSenha" class="form-label fw-semibold"></label>
+                            <input asp-for="Senha.ConfirmarNovaSenha" class="form-control" />
+                            <span asp-validation-for="Senha.ConfirmarNovaSenha" class="text-danger small"></span>
+                        </div>
+
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-outline-dark">
+                                Atualizar Senha
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Máscara simples para Telefone (XX) XXXXX-XXXX
+        document.getElementById('Dados_Telefone').addEventListener('input', function (e) {
+            var x = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
+            e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
+        });
+    </script>
+}

@@ -1,0 +1,154 @@
+@model Vion.Domain.Entities.HomeHero
+
+@{
+    ViewData["Title"] = "Editar Hero da Home";
+}
+
+<div class="admin-container">
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+            <div class="admin-card">
+                <div class="card-header">
+                    <h4 class="mb-0 text-dark">Hero da Home</h4>
+                </div>
+                <div class="card-body">
+                    <form asp-action="EditHomeHero" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                        <input type="hidden" asp-for="Id" />
+
+                        <div class="mb-4">
+                            <label asp-for="Eyebrow" class="admin-form-label">Eyebrow (texto pequeno acima do título)</label>
+                            <input asp-for="Eyebrow" class="form-control admin-form-control" />
+                            <span asp-validation-for="Eyebrow" class="text-danger"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-4">
+                                <label asp-for="TitlePrefix" class="admin-form-label">Título (parte antes do destaque)</label>
+                                <input asp-for="TitlePrefix" class="form-control admin-form-control" />
+                                <span asp-validation-for="TitlePrefix" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <label asp-for="TitleHighlight" class="admin-form-label">Título (parte destacada)</label>
+                                <input asp-for="TitleHighlight" class="form-control admin-form-control" />
+                                <span asp-validation-for="TitleHighlight" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <label asp-for="TitleSuffix" class="admin-form-label">Título (parte depois do destaque)</label>
+                                <input asp-for="TitleSuffix" class="form-control admin-form-control" />
+                                <span asp-validation-for="TitleSuffix" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Subtitle" class="admin-form-label">Subtítulo</label>
+                            <textarea asp-for="Subtitle" class="form-control admin-form-control" rows="3"></textarea>
+                            <span asp-validation-for="Subtitle" class="text-danger"></span>
+                        </div>
+
+                        <hr class="my-4" />
+
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <label asp-for="MainButtonText" class="admin-form-label">Texto do botão principal</label>
+                                <input asp-for="MainButtonText" class="form-control admin-form-control" />
+                                <span asp-validation-for="MainButtonText" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <label asp-for="MainButtonCategoriaId" class="admin-form-label">Categoria do botão principal</label>
+                                <select asp-for="MainButtonCategoriaId" asp-items="(SelectList)ViewBag.Categorias" class="form-select admin-form-control">
+                                    <option value="">Usar categoria padrão de Tênis</option>
+                                </select>
+                                <span asp-validation-for="MainButtonCategoriaId" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="SecondaryButtonText" class="admin-form-label">Texto do botão secundário</label>
+                            <input asp-for="SecondaryButtonText" class="form-control admin-form-control" />
+                            <span asp-validation-for="SecondaryButtonText" class="text-danger"></span>
+                        </div>
+
+                        <hr class="my-4" />
+
+                        <h5 class="mb-3 text-dark">Card da direita</h5>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <label asp-for="CardTag" class="admin-form-label">Tag do card (chip superior)</label>
+                                <input asp-for="CardTag" class="form-control admin-form-control" />
+                                <span asp-validation-for="CardTag" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <label asp-for="CardTitle" class="admin-form-label">Título do card</label>
+                                <input asp-for="CardTitle" class="form-control admin-form-control" />
+                                <span asp-validation-for="CardTitle" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-4">
+                                <label asp-for="CardPriceCurrent" class="admin-form-label">Preço atual</label>
+                                <input asp-for="CardPriceCurrent" class="form-control admin-form-control" type="number" step="0.01" min="0" />
+                                <span asp-validation-for="CardPriceCurrent" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <label asp-for="CardPriceOld" class="admin-form-label">Preço antigo (opcional)</label>
+                                <input asp-for="CardPriceOld" class="form-control admin-form-control" type="number" step="0.01" min="0" />
+                                <span asp-validation-for="CardPriceOld" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <label asp-for="CardSizeText" class="admin-form-label">Texto de tamanhos</label>
+                                <input asp-for="CardSizeText" class="form-control admin-form-control" />
+                                <span asp-validation-for="CardSizeText" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <label asp-for="CardBadgeText" class="admin-form-label">Badge do card</label>
+                                <input asp-for="CardBadgeText" class="form-control admin-form-control" />
+                                <span asp-validation-for="CardBadgeText" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <label asp-for="CardCategoriaId" class="admin-form-label">Categoria do card (link)</label>
+                                <select asp-for="CardCategoriaId" asp-items="(SelectList)ViewBag.Categorias" class="form-select admin-form-control">
+                                    <option value="">Usar categoria padrão de Tênis</option>
+                                </select>
+                                <span asp-validation-for="CardCategoriaId" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="CardImageUrl" class="admin-form-label">Imagem do card (URL ou caminho)</label>
+                            <input asp-for="CardImageUrl" class="form-control admin-form-control" placeholder="Ex: /images/products/seu-tenis.webp" />
+                            <span asp-validation-for="CardImageUrl" class="text-danger"></span>
+                        </div>
+
+                        <hr class="my-4" />
+
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <label asp-for="AccentColorHex" class="admin-form-label">Cor de destaque do brilho</label>
+                                <input asp-for="AccentColorHex" class="form-control form-control-color" type="color" />
+                                <span asp-validation-for="AccentColorHex" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-3 mt-4">
+                            <button type="submit" class="btn-admin-save">
+                                <i class="fa-solid fa-save me-2"></i> Salvar Hero
+                            </button>
+                            <a asp-action="Index" class="btn-admin-cancel">Voltar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
