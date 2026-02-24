@@ -5,6 +5,7 @@
 ---
 
 ## 📺 Video do Site
+![videoVion (1)](https://github.com/user-attachments/assets/6d2842cf-a9cf-46ac-9fb1-087f08a75b81)
 
 
 
@@ -13,7 +14,7 @@
 
 ## 📖 Sobre o Projeto
 
-**Vion** é uma plataforma de comércio eletrônico abrangente, desenvolvida como projeto final de curso. Ela demonstra conceitos avançados de engenharia de software utilizando as mais recentes tecnologias da Microsoft (**C# / .NET 10**).
+**Vion** é uma plataforma de comércio abrangente, desenvolvida como projeto final de curso. Ela demonstra conceitos avançados de engenharia de software utilizando as mais recentes tecnologias da Microsoft (**C# / .NET 10**).
 
 A solução segue os princípios da **Arquitetura Limpa** para garantir escalabilidade, manutenibilidade e testabilidade. Ela consiste em três componentes principais:
 1. **Vion.Api**: Uma API RESTful robusta que serve como núcleo do backend.
@@ -128,7 +129,7 @@ Abra o terminal na raiz da solução e execute:
 ### Página Home
 <img width="1912" height="911" alt="image" src="https://github.com/user-attachments/assets/81709c7c-0e30-4e73-93d8-e8bd746d4c47" />
 
-## catálogo
+## Catálogo
 <img width="1896" height="932" alt="image" src="https://github.com/user-attachments/assets/b7e7d10c-b055-4e49-a225-58384ed80b64" />
 
 ## Produto
@@ -152,7 +153,7 @@ Abra o terminal na raiz da solução e execute:
 ##  Dashboard
 <img width="979" height="585" alt="image" src="https://github.com/user-attachments/assets/60eba626-5cc4-4164-a1ed-f4b135c227c9" />
 
-## Crud
+## Painel Admin
 <img width="981" height="583" alt="image" src="https://github.com/user-attachments/assets/15cafc18-76da-4c8f-8bb2-b1872f5c5dee" />
 
 <img width="986" height="595" alt="image" src="https://github.com/user-attachments/assets/b16f79dd-9a38-476d-b951-11efe3dc3246" />
